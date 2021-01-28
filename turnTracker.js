@@ -2,7 +2,7 @@ var express = require('express');
 
 var app = express();
 var handlebars = require('express-handlebars').create({defaultLayout:'main'});
-var credentials = require('./credentials.js');
+var mysql = require('./credentials.js');
 var request = require('request');
 
 app.engine('handlebars', handlebars.engine);
@@ -36,9 +36,16 @@ app.get('/encounters',function(req,res,next){
 
 app.get('/items',function(req,res,next){
   var context = {};
-  context.sampleItemRow= [{itemID:1, heldBy:3, name:"Excalibur", type:"Sword", quantity:1, effect:"dope", isMagic:true}]
+  mysql.pool.query('SELECT * FROM items', function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+  context.items = rows;
+  //context.sampleItemRow= [{itemID:1, heldBy:3, name:"Excalibur", type:"Sword", quantity:1, effect:"dope", isMagic:true}]
   context.pageTitle = "Items"
   res.render('Items', context)
+  });
 });
 
 app.get('/turnorder',function(req,res,next){

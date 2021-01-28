@@ -1,0 +1,4 @@
+CREATE TABLE items(itemID INT PRIMARY KEY AUTO_INCREMENT, heldBy INT, name VARCHAR(255) NOT NULL, type VARCHAR(255), quantity INT, effect VARCHAR(255), isMagic BOOLEAN);
+
+INSERT INTO items(heldBy, name, type, quantity, effect, isMagic) 
+VALUES(3, 'Sting', 'Spear', 1, 'Long Reach', true);
