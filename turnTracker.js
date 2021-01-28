@@ -11,27 +11,40 @@ app.set('port', 3035);
 app.use(express.static('public'));
 
 app.get('/',function(req,res,next){
-  res.render('index')
+  var context = {};
+  context.pageTitle = "Index"
+  res.render('index', context)
 });
 
 app.get('/characterdetails',function(req,res,next){
-  res.render('CharacterDetails')
+  var context = {};
+  context.pageTitle = "Character Details"
+  res.render('CharacterDetails', context)
 });
 
 app.get('/conditions',function(req,res,next){
-  res.render('Conditions')
+  var context = {};
+  context.pageTitle = "Conditions"
+  res.render('Conditions', context)
 });
 
 app.get('/encounters',function(req,res,next){
-  res.render('Encounters')
+  var context = {};
+  context.pageTitle = "Encounters"
+  res.render('Encounters', context)
 });
 
 app.get('/items',function(req,res,next){
-  res.render('Items')
+  var context = {};
+  context.sampleItemRow= [{itemID:1, heldBy:3, name:"Excalibur", type:"Sword", quantity:1, effect:"dope", isMagic:true}]
+  context.pageTitle = "Items"
+  res.render('Items', context)
 });
 
 app.get('/turnorder',function(req,res,next){
-  res.render('TurnOrder')
+  var context = {};
+  context.pageTitle = "Turn Order"
+  res.render('TurnOrder', context)
 });
 
 app.use(function(req,res){
