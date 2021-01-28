@@ -7,56 +7,44 @@ var request = require('request');
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3000);
+app.set('port', 3035);
 app.use(express.static('public'));
 
 app.get('/',function(req,res,next){
   var context = {};
-  request('http://api.openweathermap.org/data/2.5/weather?q=corvallis&APPID=' + credentials.owmKey, function(err, response, body){
-    if(!err && response.statusCode < 400){
-      context.owm = body;
-      request({
-        "url":"http://httpbin.org/post",
-        "method":"POST",
-        "headers":{
-          "Content-Type":"application/json"
-        },
-        "body":'{"foo":"bar","number":1}'
-      }, function(err, response, body){
-        if(!err && response.statusCode < 400){
-          context.httpbin = body;
-          res.render('home',context);
-        }else{
-          console.log(err);
-          if(response){
-            console.log(response.statusCode);
-          }
-          next(err);
-        }
-      });
-    } else {
-      console.log(err);
-      if(response){
-        console.log(response.statusCode);
-      }
-      next(err);
-    }
-  });
+  context.pageTitle = "Index"
+  res.render('index', context)
 });
 
-app.get('/get-ex',function(req,res,next){
+app.get('/characterdetails',function(req,res,next){
   var context = {};
-  request('http://api.openweathermap.org/data/2.5/weather?q=corvallis&APPID=' + credentials.owmKey, function(err, response, body){
-    if(!err && response.statusCode < 400){
-      context.owm = body;
-      res.render('home',context);
-    } else {
-      if(response){
-        console.log(response.statusCode);
-      }
-      next(err);
-    }
-  });
+  context.pageTitle = "Character Details"
+  res.render('CharacterDetails', context)
+});
+
+app.get('/conditions',function(req,res,next){
+  var context = {};
+  context.pageTitle = "Conditions"
+  res.render('Conditions', context)
+});
+
+app.get('/encounters',function(req,res,next){
+  var context = {};
+  context.pageTitle = "Encounters"
+  res.render('Encounters', context)
+});
+
+app.get('/items',function(req,res,next){
+  var context = {};
+  context.sampleItemRow= [{itemID:1, heldBy:3, name:"Excalibur", type:"Sword", quantity:1, effect:"dope", isMagic:true}]
+  context.pageTitle = "Items"
+  res.render('Items', context)
+});
+
+app.get('/turnorder',function(req,res,next){
+  var context = {};
+  context.pageTitle = "Turn Order"
+  res.render('TurnOrder', context)
 });
 
 app.use(function(req,res){
@@ -71,5 +59,5 @@ app.use(function(err, req, res, next){
 });
 
 app.listen(app.get('port'), function(){
-  console.log('Express started on http://localhost:' + app.get('port') + '; press Ctrl-C to terminate.');
+  console.log('Express started on http://flip3.engr.oregonstate.edu/:' + app.get('port') + '; press Ctrl-C to terminate.');
 });
