@@ -87,9 +87,10 @@ app.get('/conditions',function(req,res,next){
     if (err) {
       next(err);
       return;
-    }
+    };
   context.conditions = rows;
   res.render('Conditions', context)
+  });
 });
 
 app.get('/encounters',function(req,res,next){
