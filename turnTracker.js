@@ -15,72 +15,7 @@ app.use(express.static('public'));
 app.get('/', function (req, res, next) {
   var context = {};
   context.pageTitle = "Index";
-  try {
-    var createCharTableStr = "CREATE TABLE IF NOT EXISTS Characters(" +
-      "charID INT PRIMARY KEY AUTO_INCREMENT NOT NULL," +
-      "name VARCHAR(255) NOT NULL," +
-      "initiativeBounus INT," +
-      "playerCharacter TINYINT(1) NOT NULL," +
-      "hostileToPlayer TINYINT(1))";
-    mysql.pool.query(createCharTableStr);
-
-    var createEnTableStr = "CREATE TABLE IF NOT EXISTS Encounters(" +
-      "enID INT PRIMARY KEY AUTO_INCREMENT NOT NULL," +
-      "round INT NOT NULL DEFAULT 1," +
-      "setting VARCHAR(255))";
-    mysql.pool.query(createEnTableStr);
-
-    var createConTableStr = "CREATE TABLE IF NOT EXISTS Conditions(" +
-      "conID INT PRIMARY KEY AUTO_INCREMENT NOT NULL," +
-      "name VARCHAR(255) NOT NULL," +
-      "effect VARCHAR(225))";
-    mysql.pool.query(createConTableStr);
-
-    var createItemTableStr = "CREATE TABLE IF NOT EXISTS Items("+
-    "itemID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,"+
-    "name VARCHAR(255) NOT NULL,"+
-    "heldBy INT,"+
-    "type VARCHAR(255),"+
-    "quantity INT NOT NULL DEFAULT 1,"+
-    "effect VARCHAR(255),"+
-    "isMagic TINYINT(1) DEFAULT 0,"+
-    "CONSTRAINT FK_CharIDHeldBy FOREIGN KEY (heldBy) REFERENCES Characters (charID) "+
-    "ON DELETE CASCADE ON UPDATE CASCADE)";
-    mysql.pool.query(createItemTableStr);
-
-    var createEnCharTableStr = "CREATE TABLE IF NOT EXISTS Encounters_Characters(" +
-      "enID INT NOT NULL," +
-      "charID INT NOT NULL," +
-      "initiativeTotal INT," +
-      "PRIMARY KEY (enID, charID)," +
-      "CONSTRAINT FK_EC_charIDcharID FOREIGN KEY (charID) REFERENCES Characters (charID) " +
-      "ON DELETE CASCADE ON UPDATE CASCADE," +
-      "CONSTRAINT FK_enIDenID FOREIGN KEY (enID) REFERENCES Encounters (enID) " +
-      "ON DELETE CASCADE ON UPDATE CASCADE)";
-    mysql.pool.query(createEnCharTableStr);
-
-    var createConCharTableStr = "CREATE TABLE IF NOT EXISTS Conditions_Characters(" +
-      "conID INT NOT NULL," +
-      "charID INT NOT NULL," +
-      "PRIMARY KEY (conID, charID)," +
-      "CONSTRAINT FK_conIDconID FOREIGN KEY (conID) REFERENCES Conditions (conID) " +
-      "ON DELETE CASCADE ON UPDATE CASCADE," +
-      "CONSTRAINT FK_CC_charIDcharID FOREIGN KEY (charID) References Characters (charID) " +
-      "ON DELETE CASCADE ON UPDATE CASCADE)";
-    mysql.pool.query(createConCharTableStr);
-
-  } catch (e) {
-    console.log("caught an error while creating tables!"); // wouldn't throw an error when CREATE TABLE syntax was wrong
-    console.log(e);
-  }
   res.render('index', context);
-});
-
-app.get('/cleardata',function(req,res,next){
-  var context = {};
-  context.pageTitle = "Clear Data";
-  res.render('ClearData', context);
-  // in progress
 });
   
 app.get('/characters',function(req,res,next){
@@ -100,7 +35,7 @@ app.get('/characterdetails', function (req, res, next) {
   var context = {};
   context.pageTitle = "Character Details";
   let charID = req.query.charID;
-  mysql.pool.query('SELECT name FROM Characters', function (err, rows, fields) {
+  mysql.pool.query('SELECT charID, name FROM Characters', function (err, rows, fields) {
     if (err) {
       next(err);
       return;
@@ -224,14 +159,19 @@ app.get('/turnorder', function (req, res, next) {
 
 //Source: https://medium.com/@johnkolo/how-to-run-multiple-sql-queries-directly-from-an-sql-file-in-node-js-part-1-dce1e6dd2def
 app.get('/reset', function (req, res) {
+  var context = {};
+  context.pageTitle = "Reset to Sample Data";
   console.log("Query Started");
   let resetQuery = fs.readFileSync('DatabaseScripts.sql').toString();
   mysql.pool.query(resetQuery, function (err, rows) {
     if (err) {
+      console.queryStatus = err;
       throw err;
     } else {
       console.log("Query Complete");
+      context.queryStatus = "Query Complete";
     }
+    res.render('Reset', context);
   });
 });
 
