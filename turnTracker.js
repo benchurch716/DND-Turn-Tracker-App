@@ -7,7 +7,7 @@ var mysql = require('./credentials.js');
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3036);
+app.set('port', 3035);
 app.use(express.static('public'));
 
 app.get('/', function (req, res, next) {
@@ -17,7 +17,7 @@ app.get('/', function (req, res, next) {
     var createCharTableStr = "CREATE TABLE IF NOT EXISTS Characters(" +
       "charID INT PRIMARY KEY AUTO_INCREMENT NOT NULL," +
       "name VARCHAR(255) NOT NULL," +
-      "initiative INT," +
+      "initiativeBounus INT," +
       "playerCharacter TINYINT(1) NOT NULL," +
       "hostileToPlayer TINYINT(1))";
     mysql.pool.query(createCharTableStr);
@@ -94,11 +94,54 @@ app.get('/characters',function(req,res,next){
   });
 });
 
-
 app.get('/characterdetails', function (req, res, next) {
   var context = {};
   context.pageTitle = "Character Details";
+  let charID = req.query.charID;
+  mysql.pool.query('SELECT name FROM Characters', function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    context.characters = rows;
+  });
+  mysql.pool.query('SELECT con.name, con.effect '+
+    'FROM Conditions con '+
+    'INNER JOIN Conditions_Characters cc '+
+    'ON con.conID = cc.conID '+
+    'WHERE charID = ?', [charID], function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      context.conditions_characters = rows;
+    });
+  mysql.pool.query('SELECT con.name FROM Conditions con WHERE con.conID NOT IN (SELECT con.conID FROM Conditions con JOIN Conditions_Characters cc ON con.conID = cc.conID ' +
+    'WHERE cc.charID = ?)', [charID], function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+    context.conditions = rows;
+    });
+  mysql.pool.query('SELECT i.name, i.type, i.quantity, i.effect, i.isMagic '+
+    'FROM Items i '+
+    'WHERE i.heldBy = ?', [charID], function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      context.character_items = rows;
+    });
+  mysql.pool.query('SELECT i.name FROM Items i WHERE i.itemID NOT IN (SELECT itemID FROM Items ' +
+    'WHERE heldBy = ?)', [charID], function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+    context.items = rows;
   res.render('CharacterDetails', context);
+  });
 });
 
 app.get('/conditions', function (req, res, next) {
@@ -142,7 +185,7 @@ app.get('/items', function (req, res, next) {
 
 app.get('/turnorder', function (req, res, next) {
   var context = {};
-  context.pageTitle = "Turn Order"
+  context.pageTitle = "Turn Order";
   let enID = req.query.enID;
   mysql.pool.query('SELECT c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, con.name conName ' +
     'FROM Characters c ' +

@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th scope="col">Name</th>
-            <th scope="col">Initiative</th>
+            <th scope="col">Initiative Bonus</th>
             <th scope="col">Player Character?</th>
             <th scope="col">Hostile to Players?</th>
         </tr>
@@ -11,7 +11,7 @@
         {{#each characters}}
         <tr>
             <td>{{name}}</td>
-            <td>{{initiative}}</td>
+            <td>{{initiativeBonus}}</td>
             <td>{{playerCharacter}}</td>
             <td>{{hostileToPlayer}}</td>
         </tr>
@@ -26,8 +26,8 @@
     </div>
 
     <div class="mb-3 col-4">
-        <label class="form-label">Initiative</label>
-        <input type="text" class="form-control" id="initiative">
+        <label class="form-label">Initiative Bonus</label>
+        <input type="text" class="form-control" id="initiativeBonus">
     </div>
 
     <div class="mb-3 form-check col-4 my-auto">

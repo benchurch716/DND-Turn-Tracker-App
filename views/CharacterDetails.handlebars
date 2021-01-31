@@ -1,0 +1,85 @@
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        Select Character
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {{#each characters}}
+        <li><a class="dropdown-item" href="characterdetails?charID={{charID}}">Character {{charID}}</a></li>
+        {{/each}}
+    </ul>
+</div>
+
+<table class="table table-dark table-striped w-50 p-3">
+    <thead>
+        <tr>
+            <th scope="col">Condition Name</th>
+            <th scope="col">Effect</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each conditions_characters}}
+        <tr>
+            <td>{{name}}</a></td>
+            <td>{{effect}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<h1>Add a Condition to this Character:</h1>
+<form class="row">
+    <div class="col-4">
+        <label class="form-label">Condition</label>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Please Select</option>
+            {{#each conditions}}
+            <option value="{{name}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="col my-auto col-2">
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+</form>
+
+<table class="table table-dark table-striped w-50 p-3">
+    <thead>
+        <tr>
+            <th scope="col">Item Name</th>
+            <th scope="col">Effect</th>
+            <th scope="col">Type</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Is it Magic?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each character_items}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{effect}}</td>
+            <td>{{type}}</td>
+            <td>{{quantity}}</td>
+            <td>{{isMagic}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<h1>Add an Item to this Character:</h1>
+<form class="row">
+    <div class="col-4">
+        <label class="form-label">Item</label>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Please Select</option>
+            {{#each items}}
+            <option value="{{name}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="col my-auto col-2">
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+</form>
