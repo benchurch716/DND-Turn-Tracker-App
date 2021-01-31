@@ -7,7 +7,7 @@ var mysql = require('./credentials.js');
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3035);
+app.set('port', 3036);
 app.use(express.static('public'));
 
 app.get('/', function(req,res,next){
@@ -37,7 +37,7 @@ app.get('/', function(req,res,next){
     var createItemTableStr = "CREATE TABLE IF NOT EXISTS Items("+
     "itemID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,"+
     "name VARCHAR(255) NOT NULL,"+
-    "heldBy INT NOT NULL,"+
+    "heldBy INT,"+
     "type VARCHAR(255),"+
     "quantity INT NOT NULL DEFAULT 1,"+
     "effect VARCHAR(255),"+
@@ -72,31 +72,50 @@ app.get('/', function(req,res,next){
   }
   res.render('index', context);
 });
+
+app.get('/cleardata',function(req,res,next){
+  var context = {};
+  context.pageTitle = "Clear Data";
+  res.render('ClearData', context);
+  // in progress
+});
   
+app.get('/characters',function(req,res,next){
+  var context = {};
+  context.pageTitle = "Characters";
+  mysql.pool.query('SELECT * FROM Characters', function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    };
+  context.characters = rows;
+  res.render('Characters', context);
+  });
+});
 
 app.get('/characterdetails',function(req,res,next){
   var context = {};
-  context.pageTitle = "Character Details"
-  res.render('CharacterDetails', context)
+  context.pageTitle = "Character Details";
+  res.render('CharacterDetails', context);
 });
 
 app.get('/conditions',function(req,res,next){
   var context = {};
-  context.pageTitle = "Conditions"
+  context.pageTitle = "Conditions";
   mysql.pool.query('SELECT * FROM Conditions', function (err, rows, fields) {
     if (err) {
       next(err);
       return;
     };
   context.conditions = rows;
-  res.render('Conditions', context)
+  res.render('Conditions', context);
   });
 });
 
 app.get('/encounters',function(req,res,next){
   var context = {};
-  context.pageTitle = "Encounters"
-  res.render('Encounters', context)
+  context.pageTitle = "Encounters";
+  res.render('Encounters', context);
 });
 
 app.get('/items',function(req,res,next){
@@ -108,15 +127,15 @@ app.get('/items',function(req,res,next){
     }
   context.items = rows;
   //context.sampleItemRow= [{itemID:1, heldBy:3, name:"Excalibur", type:"Sword", quantity:1, effect:"dope", isMagic:true}]
-  context.pageTitle = "Items"
-  res.render('Items', context)
+  context.pageTitle = "Items";
+  res.render('Items', context);
   });
 });
 
 app.get('/turnorder',function(req,res,next){
   var context = {};
-  context.pageTitle = "Turn Order"
-  res.render('TurnOrder', context)
+  context.pageTitle = "Turn Order";
+  res.render('TurnOrder', context);
 });
 
 app.use(function(req,res){
