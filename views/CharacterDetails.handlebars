@@ -5,7 +5,7 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         {{#each characters}}
-        <li><a class="dropdown-item" href="characterdetails?charID={{charID}}">Character {{charID}}</a></li>
+        <li><a class="dropdown-item" href="characterdetails?charID={{charID}}">Character #{{charID}}: {{name}}</a></li>
         {{/each}}
     </ul>
 </div>

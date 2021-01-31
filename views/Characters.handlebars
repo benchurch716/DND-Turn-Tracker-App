@@ -14,6 +14,18 @@
             <td>{{initiativeBonus}}</td>
             <td>{{playerCharacter}}</td>
             <td>{{hostileToPlayer}}</td>
+            <td>
+                <form method="post">
+                    <input type="hidden" name="charID" value="{{charID}}">
+                    <input type="submit" name="Delete" value="Delete">
+                </form>
+            </td>
+            <td>
+                <form method="post">
+                    <input type="hidden" name="charID" value="{{charID}}">
+                    <input type="submit" name="Edit" value="Edit">
+                </form>
+            </td>
         </tr>
         {{/each}}
     </tbody>
