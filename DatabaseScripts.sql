@@ -3,13 +3,13 @@ DROP TABLE IF EXISTS Characters;
 CREATE TABLE Characters(
     charID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    initiative INT,
+    initiativeBonus INT,
     playerCharacter TINYINT(1) NOT NULL,
     hostileToPlayer TINYINT(1)
 );
 INSERT INTO Characters(
         name,
-        initiative,
+        initiativeBonus,
         playerCharacter,
         hostileToPlayer
     )
