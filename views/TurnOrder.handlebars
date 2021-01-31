@@ -1,0 +1,55 @@
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        Select Encounter
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {{#each encounters}}
+        <li><a class="dropdown-item" href="turnorder?enID={{enID}}">Encounter {{enID}}</a></li>
+        {{/each}}
+    </ul>
+</div>
+<table class="table table-dark table-striped w-50 p-3">
+    <thead>
+        <tr>
+            <th scope="col">Character Name</th>
+            <th scope="col">Initiative Total</th>
+            <th scope="col">Hostile to Players</th>
+            <th scope="col">Conditions</th>
+            <th scope="col">Player Character</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each encounter_characters}}
+        <tr>
+            <td>{{name}}</a></td>
+            <td>{{initiativeTotal}}</td>
+            <td>{{hostileToPlayer}}</td>
+            <td>{{conName}}</td>
+            <td>{{playerCharacter}}</td>
+        </tr>
+
+        {{/each}}
+    </tbody>
+</table>
+<h1>Add a Character to the Encounter:</h1>
+<form class="row">
+    <div class="col-4">
+        <label class="form-label">Characters</label>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Please Select</option>
+            {{#each characters}}
+            <option value="{{name}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="mb-3 col-2">
+        <label class="form-label">Initiative Roll</label>
+        <input type="number" class="form-control" id="initiativeRoll">
+    </div>
+
+    <div class="col my-auto col-2">
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+</form>
