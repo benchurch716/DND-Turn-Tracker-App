@@ -3,6 +3,8 @@ var express = require('express');
 var app = express();
 var handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
 var mysql = require('./credentials.js');
+var path = require('path');
+var fs = require('fs');
 //var request = require('request');
 
 app.engine('handlebars', handlebars.engine);
@@ -220,6 +222,18 @@ app.get('/turnorder', function (req, res, next) {
   });
 });
 
+//Source: https://medium.com/@johnkolo/how-to-run-multiple-sql-queries-directly-from-an-sql-file-in-node-js-part-1-dce1e6dd2def
+app.get('/reset', function (req, res) {
+  console.log("Query Started");
+  let resetQuery = fs.readFileSync('DatabaseScripts.sql').toString();
+  mysql.pool.query(resetQuery, function (err, rows) {
+    if (err) {
+      throw err;
+    } else {
+      console.log("Query Complete");
+    }
+  });
+});
 
 app.use(function (req, res) {
   res.status(404);
