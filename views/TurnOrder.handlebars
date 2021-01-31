@@ -32,16 +32,21 @@
         {{/each}}
     </tbody>
 </table>
-<h1>Add a new Encounter:</h1>
+<h1>Add a Character to the Encounter:</h1>
 <form class="row">
-    <div class="mb-3 col-4">
-        <label class="form-label">Round</label>
-        <input type="text" class="form-control" id="round">
+    <div class="col-4">
+        <label class="form-label">Characters</label>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Please Select</option>
+            {{#each characters}}
+            <option value="{{name}}">{{name}}</option>
+            {{/each}}
+        </select>
     </div>
 
-    <div class="mb-3 col-4">
-        <label class="form-label">Setting</label>
-        <input type="text" class="form-control" id="setting">
+    <div class="mb-3 col-2">
+        <label class="form-label">Initiative Roll</label>
+        <input type="number" class="form-control" id="initiativeRoll">
     </div>
 
     <div class="col my-auto col-2">

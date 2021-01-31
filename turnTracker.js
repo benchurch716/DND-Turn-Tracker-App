@@ -115,9 +115,8 @@ app.get('/items', function (req, res, next) {
       return;
     }
     context.items = rows;
-    //context.sampleItemRow= [{itemID:1, heldBy:3, name:"Excalibur", type:"Sword", quantity:1, effect:"dope", isMagic:true}]
-    context.pageTitle = "Items"
-    res.render('Items', context)
+    context.pageTitle = "Items";
+    res.render('Items', context);
   });
 });
 
@@ -140,13 +139,21 @@ app.get('/turnorder', function (req, res, next) {
       }
       context.encounter_characters = rows;
     });
+  mysql.pool.query('SELECT c.name FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
+    'WHERE ec.enID = ?)', [enID], function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      context.characters = rows;
+    });
   mysql.pool.query('SELECT enID FROM Encounters', function (err, rows, fields) {
     if (err) {
       next(err);
       return;
     }
     context.encounters = rows;
-    res.render('TurnOrder', context)
+    res.render('TurnOrder', context);
   });
 });
 
