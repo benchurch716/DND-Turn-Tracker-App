@@ -10,6 +10,18 @@
         <tr>
             <td>{{name}}</td>
             <td>{{effect}}</td>
+             <td>
+                <form method="post">
+                    <input type="hidden" name="charID" value="{{conID}}">
+                    <input type="submit" name="Delete" value="Delete">
+                </form>
+            </td>
+            <td>
+                <form method="post">
+                    <input type="hidden" name="charID" value="{{conID}}">
+                    <input type="submit" name="Edit" value="Edit">
+                </form>
+            </td>
         </tr>
         {{/each}}
     </tbody>
