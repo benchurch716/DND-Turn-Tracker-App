@@ -158,15 +158,15 @@ app.get('/turnorder', function (req, res, next) {
 });
 
 //Source: https://medium.com/@johnkolo/how-to-run-multiple-sql-queries-directly-from-an-sql-file-in-node-js-part-1-dce1e6dd2def
-app.get('/reset', function (req, res) {
+app.get('/reset', function (req, res, next) {
   var context = {};
   context.pageTitle = "Reset to Sample Data";
   console.log("Query Started");
   let resetQuery = fs.readFileSync('DatabaseScripts.sql').toString();
   mysql.pool.query(resetQuery, function (err, rows) {
     if (err) {
-      console.queryStatus = err;
-      throw err;
+      next(err);
+      return;
     } else {
       console.log("Query Complete");
       context.queryStatus = "Query Complete";

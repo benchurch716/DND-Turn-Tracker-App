@@ -1,3 +1,6 @@
+<div class="container">
+    <h6>Select a character from the drop down menu to display this character's conditions and items.</h6>
+</div>
 <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
         aria-expanded="false">
@@ -11,6 +14,7 @@
 </div>
 
 <table class="table table-dark table-striped w-50 p-3">
+    <caption>The selected character is affected by these conditions</caption>
     <thead>
         <tr>
             <th scope="col">Condition Name</th>
@@ -39,24 +43,9 @@
     </tbody>
 </table>
 
-<h1>Add a Condition to this Character:</h1>
-<form class="row">
-    <div class="col-4">
-        <label class="form-label">Condition</label>
-        <select class="form-select" aria-label="Default select example">
-            <option selected>Please Select</option>
-            {{#each conditions}}
-            <option value="{{name}}">{{name}}</option>
-            {{/each}}
-        </select>
-    </div>
-
-    <div class="col my-auto col-2">
-        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-    </div>
-</form>
 
 <table class="table table-dark table-striped w-50 p-3">
+    <caption>The selected character is holding these items</caption>
     <thead>
         <tr>
             <th scope="col">Item Name</th>
@@ -90,6 +79,23 @@
         {{/each}}
     </tbody>
 </table>
+
+<h1>Add a Condition to this Character:</h1>
+<form class="row">
+    <div class="col-4">
+        <label class="form-label">Condition</label>
+        <select class="form-select" aria-label="Default select example">
+            <option selected>Please Select</option>
+            {{#each conditions}}
+            <option value="{{name}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="col my-auto col-2">
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+</form>
 
 <h1>Add an Item to this Character:</h1>
 <form class="row">
