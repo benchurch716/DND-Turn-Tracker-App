@@ -17,8 +17,8 @@ app.get('/', function (req, res, next) {
   context.pageTitle = "Index";
   res.render('index', context);
 });
-  
-app.get('/characters',function(req,res,next){
+
+app.get('/characters', function (req, res, next) {
   var context = {};
   context.pageTitle = "Characters";
   mysql.pool.query('SELECT * FROM Characters', function (err, rows, fields) {
@@ -26,8 +26,8 @@ app.get('/characters',function(req,res,next){
       next(err);
       return;
     };
-  context.characters = rows;
-  res.render('Characters', context);
+    context.characters = rows;
+    res.render('Characters', context);
   });
 });
 
@@ -35,6 +35,15 @@ app.get('/characterdetails', function (req, res, next) {
   var context = {};
   context.pageTitle = "Character Details";
   let charID = req.query.charID;
+  
+  mysql.pool.query('SELECT name FROM Characters WHERE charID=?', [charID], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    context.selectedCharacter = rows;
+  });  
+
   mysql.pool.query('SELECT charID, name FROM Characters', function (err, rows, fields) {
     if (err) {
       next(err);
@@ -42,10 +51,10 @@ app.get('/characterdetails', function (req, res, next) {
     }
     context.characters = rows;
   });
-  mysql.pool.query('SELECT con.name, con.effect '+
-    'FROM Conditions con '+
-    'INNER JOIN Conditions_Characters cc '+
-    'ON con.conID = cc.conID '+
+  mysql.pool.query('SELECT con.name, con.effect ' +
+    'FROM Conditions con ' +
+    'INNER JOIN Conditions_Characters cc ' +
+    'ON con.conID = cc.conID ' +
     'WHERE charID = ?', [charID], function (err, rows, fields) {
       if (err) {
         next(err);
@@ -59,10 +68,10 @@ app.get('/characterdetails', function (req, res, next) {
         next(err);
         return;
       }
-    context.conditions = rows;
+      context.conditions = rows;
     });
-  mysql.pool.query('SELECT i.name, i.type, i.quantity, i.effect, i.isMagic '+
-    'FROM Items i '+
+  mysql.pool.query('SELECT i.name, i.type, i.quantity, i.effect, i.isMagic ' +
+    'FROM Items i ' +
     'WHERE i.heldBy = ?', [charID], function (err, rows, fields) {
       if (err) {
         next(err);
@@ -76,9 +85,9 @@ app.get('/characterdetails', function (req, res, next) {
         next(err);
         return;
       }
-    context.items = rows;
-  res.render('CharacterDetails', context);
-  });
+      context.items = rows;
+      res.render('CharacterDetails', context);
+    });
 });
 
 app.get('/conditions', function (req, res, next) {
@@ -89,8 +98,8 @@ app.get('/conditions', function (req, res, next) {
       next(err);
       return;
     };
-  context.conditions = rows;
-  res.render('Conditions', context);
+    context.conditions = rows;
+    res.render('Conditions', context);
   });
 });
 
