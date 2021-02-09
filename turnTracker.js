@@ -5,12 +5,17 @@ var handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
 var mysql = require('./credentials.js');
 var path = require('path');
 var fs = require('fs');
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 //var request = require('request');
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3035);
+app.set('port', 3037);
 app.use(express.static('public'));
+
 
 app.get('/', function (req, res, next) {
   var context = {};
@@ -30,19 +35,41 @@ app.get('/characters', function (req, res, next) {
     res.render('Characters', context);
   });
 });
+// Route to add characters to the table from the form
+app.post('/characters', function (req, res, next) {
+  console.log(req.body);
+  mysql.pool.query('INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (?, ?, ?, ?)', 
+    [req.body.name, req.body.initiativeBonus, req.body.playerCharacter, req.body.hostileToPlayer], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect('/characters');
+  });
+});
+// Route to delete characters from the table
+app.post('/charactersdelete', function (req, res, next) {
+  mysql.pool.query('DELETE FROM Characters WHERE charID=?', [req.body.charID], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+  });
+  res.redirect('/characters');
+});
 
 app.get('/characterdetails', function (req, res, next) {
   var context = {};
   context.pageTitle = "Character Details";
   let charID = req.query.charID;
-  
+
   mysql.pool.query('SELECT name FROM Characters WHERE charID=?', [charID], function (err, rows, fields) {
     if (err) {
       next(err);
       return;
     }
     context.selectedCharacter = rows;
-  });  
+  });
 
   mysql.pool.query('SELECT charID, name FROM Characters', function (err, rows, fields) {
     if (err) {
@@ -102,7 +129,7 @@ app.get('/conditions', function (req, res, next) {
     res.render('Conditions', context);
   });
 });
-
+// Route to display the encounter table
 app.get('/encounters', function (req, res, next) {
   var context = {};
   mysql.pool.query('SELECT * FROM Encounters', function (err, rows, fields) {
@@ -115,6 +142,27 @@ app.get('/encounters', function (req, res, next) {
     res.render('Encounters', context)
   });
 });
+// Route to add encounters to the table from the form
+app.post('/encounters', function (req, res, next) {
+  mysql.pool.query('INSERT INTO Encounters (round, setting) VALUES (?, ?)', [req.body.round, req.body.setting], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect('/encounters');
+  });
+});
+// Route to delete encounter from the table
+app.post('/encountersdelete', function (req, res, next) {
+  mysql.pool.query('DELETE FROM Encounters WHERE enID=?', [req.body.enID], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+  });
+  res.redirect('/encounters');
+});
+
 
 app.get('/items', function (req, res, next) {
   var context = {};
