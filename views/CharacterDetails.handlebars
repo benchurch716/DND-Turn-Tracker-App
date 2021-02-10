@@ -27,8 +27,9 @@
             <td>{{name}}</a></td>
             <td>{{effect}}</td>
             <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{name}}">
+                <form action='/characterdetailsdeletecondition' method="post">
+                    <input type="hidden" name="conID" value="{{conID}}">
+                    <input type='hidden' name='charID' value="{{../charID}}">
                     <input type="submit" name="Remove" value="Remove">
                 </form>
             </td>
@@ -64,8 +65,9 @@
             <td>{{quantity}}</td>
             <td>{{isMagic}}</td>
             <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{itemID}}">
+                <form action='/characterdetailsdeleteitem' method="post">
+                    <input type="hidden" name="itemID" value="{{itemID}}">
+                    <input type='hidden' name='charID' value="{{../charID}}">
                     <input type="submit" name="Remove" value="Remove">
                 </form>
             </td>
@@ -81,34 +83,34 @@
 </table>
 
 <h1>Add a Condition to this Character:</h1>
-<form class="row">
+<form action='/characterdetailsaddconditions' method='post' class="row">
     <div class="col-4">
         <label class="form-label">Condition</label>
-        <select class="form-select" aria-label="Default select example">
+        <select class="form-select" aria-label="Default select example" name="conID">
             <option selected>Please Select</option>
             {{#each conditions}}
-            <option value="{{name}}">{{name}}</option>
+            <option value="{{conID}}">{{name}}</option>
             {{/each}}
         </select>
     </div>
-
+    <input type='hidden' name='charID' value="{{charID}}">
     <div class="col my-auto col-2">
         <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </div>
 </form>
 
 <h1>Add an Item to this Character:</h1>
-<form class="row">
+<form action='/characterdetailsadditems' method='post' class="row">
     <div class="col-4">
         <label class="form-label">Item</label>
-        <select class="form-select" aria-label="Default select example">
+        <select class="form-select" aria-label="Default select example" name='itemID'>
             <option selected>Please Select</option>
             {{#each items}}
-            <option value="{{name}}">{{name}}</option>
+            <option value="{{itemID}}">{{name}}</option>
             {{/each}}
         </select>
     </div>
-
+    <input type='hidden' name='charID' value="{{charID}}">
     <div class="col my-auto col-2">
         <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </div>

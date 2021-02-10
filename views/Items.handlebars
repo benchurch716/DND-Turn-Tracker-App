@@ -19,14 +19,14 @@
             <td>{{quantity}}</td>
             <td>{{isMagic}}</td>
              <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{itemID}}">
+                <form action='/itemsdelete' method="post">
+                    <input type="hidden" name="itemID" value="{{itemID}}">
                     <input type="submit" name="Delete" value="Delete">
                 </form>
             </td>
             <td>
                 <form method="post">
-                    <input type="hidden" name="charID" value="{{itemID}}">
+                    <input type="hidden" name="itemID" value="{{itemID}}">
                     <input type="submit" name="Edit" value="Edit">
                 </form>
             </td>
@@ -35,33 +35,29 @@
     </tbody>
 </table>
 <h1>Add a new Item:</h1>
-<form class="row">
+<form action="/items" method="post" class="row">
     <div class="mb-3 col-4">
-        <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="name">
+        <label class="form-label">Name (required)</label>
+        <input type="text" class="form-control" id="name" name="name">
     </div>
 
     <div class="mb-3 col-4">
-        <label class="form-label">Held By</label>
-        <input type="text" class="form-control" id="heldBy">
-    </div>
-    <div class="mb-3 col-4">
-        <label class="form-label">Effect (Optional)</label>
-        <input type="text" class="form-control" id="effect">
+        <label class="form-label">Effect (optional)</label>
+        <input type="text" class="form-control" id="effect" name="effect">
     </div>
 
     <div class="mb-3 col-4">
-        <label class="form-label">Type (Optional)</label>
-        <input type="text" class="form-control" id="type">
+        <label class="form-label">Type (optional)</label>
+        <input type="text" class="form-control" id="type" name="type">
     </div>
 
     <div class="mb-3 col-4">
-        <label class="form-label">Quantitiy</label>
-        <input type="text" class="form-control" id="quantity">
+        <label class="form-label">Quantity (required)</label>
+        <input type="text" class="form-control" id="quantity" name="quantity">
     </div>
 
     <div class="mb-3 form-check col-4 my-auto">
-        <input type="checkbox" class="form-check-input mx-auto" id="exampleCheck1">
+        <input type="checkbox" class="form-check-input mx-auto" id="exampleCheck1" name="isMagic">
         <label class="form-check-label mx-auto" for="exampleCheck1">Magic Item? (Optional)</label>
     </div>
     <div class="col">
