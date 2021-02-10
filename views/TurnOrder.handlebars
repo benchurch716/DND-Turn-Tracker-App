@@ -28,8 +28,9 @@
             <td>{{conName}}</td>
             <td>{{playerCharacter}}</td>
              <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{name}}">
+                <form action='/turnorderdelete' method="post">
+                    <input type="hidden" name="charID" value="{{charID}}">
+                    <input type='hidden' name='enID' value="{{../enID}}">
                     <input type="submit" name="Remove" value="Remove">
                 </form>
             </td>
@@ -45,22 +46,21 @@
     </tbody>
 </table>
 <h1>Add a Character to the Encounter:</h1>
-<form class="row">
+<form action="/turnorder" method="post"class="row">
     <div class="col-4">
-        <label class="form-label">Characters</label>
-        <select class="form-select" aria-label="Default select example">
+        <label class="form-label">Character</label>
+        <select class="form-select" aria-label="Default select example" name="charID">
             <option selected>Please Select</option>
             {{#each characters}}
-            <option value="{{name}}">{{name}}</option>
+            <option value="{{charID}}">{{name}}</option>
             {{/each}}
         </select>
     </div>
-
     <div class="mb-3 col-2">
         <label class="form-label">Initiative Roll</label>
-        <input type="number" class="form-control" id="initiativeRoll">
+        <input type="number" class="form-control" id="initiativeRoll" name="initiativeRoll">
     </div>
-
+    <input type='hidden' name='enID' value="{{enID}}">
     <div class="col my-auto col-2">
         <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </div>

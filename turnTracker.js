@@ -22,7 +22,7 @@ app.get('/', function (req, res, next) {
   context.pageTitle = "Index";
   res.render('index', context);
 });
-
+// Characters
 app.get('/characters', function (req, res, next) {
   var context = {};
   context.pageTitle = "Characters";
@@ -38,14 +38,14 @@ app.get('/characters', function (req, res, next) {
 // Route to add characters to the table from the form
 app.post('/characters', function (req, res, next) {
   console.log(req.body);
-  mysql.pool.query('INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (?, ?, ?, ?)', 
+  mysql.pool.query('INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (?, ?, ?, ?)',
     [req.body.name, req.body.initiativeBonus, req.body.playerCharacter, req.body.hostileToPlayer], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/characters');
-  });
+      if (err) {
+        next(err);
+        return;
+      }
+      res.redirect('/characters');
+    });
 });
 // Route to delete characters from the table
 app.post('/charactersdelete', function (req, res, next) {
@@ -57,7 +57,7 @@ app.post('/charactersdelete', function (req, res, next) {
   });
   res.redirect('/characters');
 });
-
+//Character Details
 app.get('/characterdetails', function (req, res, next) {
   var context = {};
   context.pageTitle = "Character Details";
@@ -116,7 +116,7 @@ app.get('/characterdetails', function (req, res, next) {
       res.render('CharacterDetails', context);
     });
 });
-
+// Conditions
 app.get('/conditions', function (req, res, next) {
   var context = {};
   context.pageTitle = "Conditions";
@@ -129,7 +129,7 @@ app.get('/conditions', function (req, res, next) {
     res.render('Conditions', context);
   });
 });
-// Route to display the encounter table
+// Encounters
 app.get('/encounters', function (req, res, next) {
   var context = {};
   mysql.pool.query('SELECT * FROM Encounters', function (err, rows, fields) {
@@ -163,7 +163,7 @@ app.post('/encountersdelete', function (req, res, next) {
   res.redirect('/encounters');
 });
 
-
+//Items
 app.get('/items', function (req, res, next) {
   var context = {};
   mysql.pool.query('SELECT * FROM Items', function (err, rows, fields) {
@@ -176,12 +176,13 @@ app.get('/items', function (req, res, next) {
     res.render('Items', context);
   });
 });
-
+//Turn Order
 app.get('/turnorder', function (req, res, next) {
   var context = {};
   context.pageTitle = "Turn Order";
   let enID = req.query.enID;
-  mysql.pool.query('SELECT c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, con.name conName ' +
+  context.enID = enID;
+  mysql.pool.query('SELECT c.charID, c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, con.name conName ' +
     'FROM Characters c ' +
     'JOIN Encounters_Characters ec ' +
     'ON c.charID = ec.charID ' +
@@ -196,7 +197,8 @@ app.get('/turnorder', function (req, res, next) {
       }
       context.encounter_characters = rows;
     });
-  mysql.pool.query('SELECT c.name FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
+  //select characters availble to add to the encounter
+  mysql.pool.query('SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
     'WHERE ec.enID = ?)', [enID], function (err, rows, fields) {
       if (err) {
         next(err);
@@ -211,10 +213,39 @@ app.get('/turnorder', function (req, res, next) {
     }
     context.encounters = rows;
     res.render('TurnOrder', context);
+  }); 
+});
+// Turn Order add character route
+app.post('/turnorder', function (req, res, next) {
+  mysql.pool.query('SELECT initiativeBonus FROM Characters WHERE charID=?', [req.body.charID], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    let initiaitiveTotal = +rows[0].initiativeBonus + +req.body.initiativeRoll;
+    mysql.pool.query('INSERT INTO Encounters_Characters (enID, charID, initiativeTotal) VALUES (?, ?, ?)', [req.body.enID, req.body.charID, initiaitiveTotal], function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+
+    });
   });
+  res.redirect('/turnorder?enID=' + [req.body.enID]);
 });
 
-//Source: https://medium.com/@johnkolo/how-to-run-multiple-sql-queries-directly-from-an-sql-file-in-node-js-part-1-dce1e6dd2def
+// Turn order remove route
+app.post('/turnorderdelete', function (req, res, next) {
+  mysql.pool.query('DELETE FROM Encounters_Characters WHERE charID=? and enID=?', [req.body.charID, req.body.enID], function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+  });
+  res.redirect('/turnorder?enID=' + [req.body.enID]);
+});
+
+//Reset (adapated from Source: https://medium.com/@johnkolo/how-to-run-multiple-sql-queries-directly-from-an-sql-file-in-node-js-part-1-dce1e6dd2def)
 app.get('/reset', function (req, res, next) {
   var context = {};
   context.pageTitle = "Reset to Sample Data";
