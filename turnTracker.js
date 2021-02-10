@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3037);
+app.set('port', 3036);
 app.use(express.static('public'));
 
 
@@ -22,6 +22,7 @@ app.get('/', function (req, res, next) {
   context.pageTitle = "Index";
   res.render('index', context);
 });
+
 // Characters
 app.get('/characters', function (req, res, next) {
   var context = {};
@@ -57,12 +58,13 @@ app.post('/charactersdelete', function (req, res, next) {
   });
   res.redirect('/characters');
 });
+
 //Character Details
 app.get('/characterdetails', function (req, res, next) {
   var context = {};
   context.pageTitle = "Character Details";
   let charID = req.query.charID;
-
+  context.charID = charID;
   mysql.pool.query('SELECT name FROM Characters WHERE charID=?', [charID], function (err, rows, fields) {
     if (err) {
       next(err);
@@ -70,7 +72,6 @@ app.get('/characterdetails', function (req, res, next) {
     }
     context.selectedCharacter = rows;
   });
-
   mysql.pool.query('SELECT charID, name FROM Characters', function (err, rows, fields) {
     if (err) {
       next(err);
@@ -78,7 +79,7 @@ app.get('/characterdetails', function (req, res, next) {
     }
     context.characters = rows;
   });
-  mysql.pool.query('SELECT con.name, con.effect ' +
+  mysql.pool.query('SELECT con.conID, con.name, con.effect ' +
     'FROM Conditions con ' +
     'INNER JOIN Conditions_Characters cc ' +
     'ON con.conID = cc.conID ' +
@@ -89,7 +90,7 @@ app.get('/characterdetails', function (req, res, next) {
       }
       context.conditions_characters = rows;
     });
-  mysql.pool.query('SELECT con.name FROM Conditions con WHERE con.conID NOT IN (SELECT con.conID FROM Conditions con JOIN Conditions_Characters cc ON con.conID = cc.conID ' +
+  mysql.pool.query('SELECT con.name, con.conID FROM Conditions con WHERE con.conID NOT IN (SELECT con.conID FROM Conditions con JOIN Conditions_Characters cc ON con.conID = cc.conID ' +
     'WHERE cc.charID = ?)', [charID], function (err, rows, fields) {
       if (err) {
         next(err);
@@ -97,7 +98,7 @@ app.get('/characterdetails', function (req, res, next) {
       }
       context.conditions = rows;
     });
-  mysql.pool.query('SELECT i.name, i.type, i.quantity, i.effect, i.isMagic ' +
+  mysql.pool.query('SELECT i.itemID, i.name, i.type, i.quantity, i.effect, i.isMagic ' +
     'FROM Items i ' +
     'WHERE i.heldBy = ?', [charID], function (err, rows, fields) {
       if (err) {
@@ -106,7 +107,7 @@ app.get('/characterdetails', function (req, res, next) {
       }
       context.character_items = rows;
     });
-  mysql.pool.query('SELECT i.name FROM Items i WHERE i.itemID NOT IN (SELECT itemID FROM Items ' +
+  mysql.pool.query('SELECT i.name, i.itemID FROM Items i WHERE i.itemID NOT IN (SELECT itemID FROM Items ' +
     'WHERE heldBy = ?)', [charID], function (err, rows, fields) {
       if (err) {
         next(err);
@@ -116,6 +117,48 @@ app.get('/characterdetails', function (req, res, next) {
       res.render('CharacterDetails', context);
     });
 });
+// Route to add conditions to the selected character
+app.post('/characterdetailsaddconditions', function (req, res, next) {
+  console.log("body = "+JSON.stringify(req.body));
+  mysql.pool.query('INSERT INTO Conditions_Characters (conID, charID) VALUES (?, ?)', [req.body.conID, req.body.charID], function (err, rows, fields) {
+    if (err) {
+      res.write(JSON.stringify(err));
+      res.end();
+    }
+    res.redirect('/characterdetails?charID=' + [req.body.charID]);
+  });
+});
+// Route to add items to the selected character
+app.post('/characterdetailsadditems', function (req, res, next) {
+  mysql.pool.query('UPDATE Items SET heldBy=? WHERE itemID=?', [req.body.charID, req.body.itemID], function (err, rows, fields) {
+    if (err) {
+      res.write(JSON.stringify(err));
+      res.end();
+    }
+    res.redirect('/characterdetails?charID=' + [req.body.charID]);
+  });
+});
+// Route to remove condition from character
+app.post('/characterdetailsdeletecondition', function (req, res, next) {
+  mysql.pool.query('DELETE FROM Conditions_Characters WHERE conID=? and charID=?', [req.body.conID, req.body.charID], function (err, rows, fields) {
+    if (err) {
+      res.write(JSON.stringify(err));
+      res.end();
+    }
+  });
+  res.redirect('/characterdetails?charID=' + [req.body.charID]);
+});
+// Route to remove item from character
+app.post('/characterdetailsdeleteitem', function (req, res, next) {
+  mysql.pool.query('UPDATE Items SET heldBy=NULL WHERE itemID=?', [req.body.itemID], function (err, rows, fields) {
+    if (err) {
+      res.write(JSON.stringify(err));
+      res.end();
+    }
+  });
+  res.redirect('/characterdetails?charID=' + [req.body.charID]);
+});
+
 // Conditions
 app.get('/conditions', function (req, res, next) {
   var context = {};
@@ -129,6 +172,27 @@ app.get('/conditions', function (req, res, next) {
     res.render('Conditions', context);
   });
 });
+// Route to add conditions to the table from the form
+app.post('/conditions', function (req, res, next){
+  mysql.pool.query('INSERT INTO Conditions (name, effect) VALUES (?, ?)', [req.body.name, req.body.effect], function (err, rows, fields){
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect('/conditions');
+  });
+});
+// Route to delete condition from the table
+app.post('/conditionsdelete', function (req, res, next){
+  mysql.pool.query('DELETE FROM Conditions WHERE conID=?', [req.body.conID], function (err, rows, fields){
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect('/conditions');
+  });
+});
+
 // Encounters
 app.get('/encounters', function (req, res, next) {
   var context = {};
@@ -176,6 +240,27 @@ app.get('/items', function (req, res, next) {
     res.render('Items', context);
   });
 });
+// Route to add items to the table from the form
+app.post('/items', function (req, res, next){
+  mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (?, ?, ?, ?, ?)', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields){
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect('/items');
+  });
+});
+// Route to delete item from the table
+app.post('/itemsdelete', function (req, res, next){
+  mysql.pool.query('DELETE FROM Items WHERE itemID=?', [req.body.itemID], function (err, rows, fields){
+    if (err) {
+      next(err);
+      return;
+    }
+    res.redirect('/items');
+  });
+});
+
 //Turn Order
 app.get('/turnorder', function (req, res, next) {
   var context = {};
@@ -233,7 +318,6 @@ app.post('/turnorder', function (req, res, next) {
   });
   res.redirect('/turnorder?enID=' + [req.body.enID]);
 });
-
 // Turn order remove route
 app.post('/turnorderdelete', function (req, res, next) {
   mysql.pool.query('DELETE FROM Encounters_Characters WHERE charID=? and enID=?', [req.body.charID, req.body.enID], function (err, rows, fields) {
