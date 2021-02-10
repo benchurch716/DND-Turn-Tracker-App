@@ -37,7 +37,6 @@ app.get('/characters', function (req, res, next) {
 });
 // Route to add characters to the table from the form
 app.post('/characters', function (req, res, next) {
-  console.log(req.body);
   mysql.pool.query('INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (?, ?, ?, ?)',
     [req.body.name, req.body.initiativeBonus, req.body.playerCharacter, req.body.hostileToPlayer], function (err, rows, fields) {
       if (err) {
@@ -196,24 +195,24 @@ app.get('/turnorder', function (req, res, next) {
         return;
       }
       context.encounter_characters = rows;
+      //select characters availble to add to the encounter
+      mysql.pool.query('SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
+        'WHERE ec.enID = ?)', [enID], function (err, rows, fields) {
+          if (err) {
+            next(err);
+            return;
+          }
+          context.characters = rows;
+          mysql.pool.query('SELECT enID FROM Encounters', function (err, rows, fields) {
+            if (err) {
+              next(err);
+              return;
+            }
+            context.encounters = rows;
+            res.render('TurnOrder', context);
+          });
+        });
     });
-  //select characters availble to add to the encounter
-  mysql.pool.query('SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
-    'WHERE ec.enID = ?)', [enID], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      context.characters = rows;
-    });
-  mysql.pool.query('SELECT enID FROM Encounters', function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    context.encounters = rows;
-    res.render('TurnOrder', context);
-  }); 
 });
 // Turn Order add character route
 app.post('/turnorder', function (req, res, next) {
