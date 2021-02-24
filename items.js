@@ -3,24 +3,22 @@ module.exports = function () {
     var router = express.Router();
     var mysql = require('./credentials.js');
 
-    async function getItems(res, mysql, context) {
+    function getItems(res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT name, effect, type, quantity, isMagic, itemID FROM Items', function (err, rows, fields) {
+            mysql.pool.query('SELECT name, effect, type, quantity, isMagic, itemID FROM Items', function (err, rows) {
                 if (err) {
-                    res.write(JSON.stringify(error));
-                    res.end();
-                    reject(err);
-                } else
+                    reject(error);
+                } else {
                     resolve(context.items = rows);
+                }
             });
-        })
-    };
-
+        });
+    }
     router.get('/', function (req, res, next) {
         var context = {};
         context.pageTitle = "Items";
         context.jsscripts = ["deleteItem.js"];
-        getItems(res, mysql, context).then(res.render('Items', context));
+        getItems(res, mysql, context).then(result => res.render('Items', context));
     });
 
     // Route to add items to the table from the form
