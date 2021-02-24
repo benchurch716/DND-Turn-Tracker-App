@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3036);
-app.use(express.static('public'));
+app.set('port', 3038);
+app.use('/static', express.static('public'));
 
 
 app.get('/', function (req, res, next) {
@@ -227,38 +227,7 @@ app.post('/encountersdelete', function (req, res, next) {
 });
 
 //Items
-app.get('/items', function (req, res, next) {
-  var context = {};
-  mysql.pool.query('SELECT * FROM Items', function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    context.items = rows;
-    context.pageTitle = "Items";
-    res.render('Items', context);
-  });
-});
-// Route to add items to the table from the form
-app.post('/items', function (req, res, next){
-  mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (?, ?, ?, ?, ?)', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields){
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/items');
-  });
-});
-// Route to delete item from the table
-app.post('/itemsdelete', function (req, res, next){
-  mysql.pool.query('DELETE FROM Items WHERE itemID=?', [req.body.itemID], function (err, rows, fields){
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/items');
-  });
-});
+app.use('/Items', require('./items.js'));
 
 //Turn Order
 app.get('/turnorder', function (req, res, next) {
