@@ -161,39 +161,7 @@ app.post('/conditionsdelete', function (req, res, next){
 });
 
 // Encounters
-app.get('/encounters', function (req, res, next) {
-  var context = {};
-  mysql.pool.query('SELECT * FROM Encounters', function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    context.encounters = rows;
-    context.pageTitle = "Encounters"
-    res.render('Encounters', context)
-  });
-});
-// Route to add encounters to the table from the form
-app.post('/encounters', function (req, res, next) {
-  mysql.pool.query('INSERT INTO Encounters (round, setting) VALUES (?, ?)', [req.body.round, req.body.setting], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/encounters');
-  });
-});
-// Route to delete encounter from the table
-app.post('/encountersdelete', function (req, res, next) {
-  mysql.pool.query('DELETE FROM Encounters WHERE enID=?', [req.body.enID], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-  });
-  res.redirect('/encounters');
-});
-
+app.use('/encounters', require('./encounters.js'));
 //Items
 app.use('/items', require('./items.js'));
 
