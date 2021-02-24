@@ -14,12 +14,7 @@
             <td>{{initiativeBonus}}</td>
             <td>{{playerCharacter}}</td>
             <td>{{hostileToPlayer}}</td>
-            <td>
-                <form action='/charactersdelete' method="post">
-                    <input type="hidden" name="charID" value="{{charID}}">
-                    <input type="submit" name="Delete" value="Delete">
-                </form>
-            </td>
+            <td><button onclick="deleteCharacter({{charID}})">Delete</button></td>
             <td>
                 <form method="post">
                     <input type="hidden" name="charID" value="{{charID}}">

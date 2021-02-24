@@ -24,39 +24,7 @@ app.get('/', function (req, res, next) {
 });
 
 // Characters
-app.get('/characters', function (req, res, next) {
-  var context = {};
-  context.pageTitle = "Characters";
-  mysql.pool.query('SELECT * FROM Characters', function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    };
-    context.characters = rows;
-    res.render('Characters', context);
-  });
-});
-// Route to add characters to the table from the form
-app.post('/characters', function (req, res, next) {
-  mysql.pool.query('INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (?, ?, ?, ?)',
-    [req.body.name, req.body.initiativeBonus, req.body.playerCharacter, req.body.hostileToPlayer], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.redirect('/characters');
-    });
-});
-// Route to delete characters from the table
-app.post('/charactersdelete', function (req, res, next) {
-  mysql.pool.query('DELETE FROM Characters WHERE charID=?', [req.body.charID], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-  });
-  res.redirect('/characters');
-});
+app.use('/characters', require('./characters.js'));
 
 //Character Details
 app.get('/characterdetails', function (req, res, next) {
@@ -227,7 +195,7 @@ app.post('/encountersdelete', function (req, res, next) {
 });
 
 //Items
-app.use('/Items', require('./items.js'));
+app.use('/items', require('./items.js'));
 
 //Turn Order
 app.get('/turnorder', function (req, res, next) {
