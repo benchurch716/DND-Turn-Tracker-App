@@ -14,11 +14,39 @@ module.exports = function () {
             });
         });
     }
+
+    function getSelectedItem(itemID, res, mysql, context) {
+        return new Promise(function (resolve, reject) {
+            mysql.pool.query('SELECT name, effect, type, quantity, isMagic, itemID FROM Items WHERE itemID=?', [itemID], function (err, rows) {
+                if (err) {
+                    reject(error);
+                } else {
+                    resolve(context.selectedItem = rows[0]);
+                }
+            });
+        });
+    }
     router.get('/', function (req, res, next) {
         var context = {};
         context.pageTitle = "Items";
         context.jsscripts = ["deleteItem.js"];
         getItems(res, mysql, context).then(result => res.render('Items', context));
+    });
+
+    router.get('/:id', function (req, res, next) {
+        var context = {};
+        context.pageTitle = "Update Item"
+        //helper function to precheck checkboxes based on boolean value for the database
+        context.helpers = {
+            checked: function (value) {
+                if(value ==  true){
+                return 'checked';
+                }
+            }
+        }
+        getSelectedItem(req.params.id, res, mysql, context)
+            .then(result => console.log(context.selectedItem.isMagic))
+            .then(result => res.render('Update_Item', context));
     });
 
     // Route to add items to the table from the form

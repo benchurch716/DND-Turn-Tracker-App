@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3038);
+app.set('port', 3039);
 app.use('/static', express.static('public'));
 
 //Index Page
@@ -129,6 +129,7 @@ app.use('/conditions', require('./conditions.js'));
 // Encounters
 app.use('/encounters', require('./encounters.js'));
 //Items
+
 app.use('/items', require('./items.js'));
 //Turn Order
 app.use('/turnorder', require('./turnOrder.js'));
