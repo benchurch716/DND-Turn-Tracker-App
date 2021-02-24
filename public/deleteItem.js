@@ -1,5 +1,4 @@
-function deleteItem(id){
-    console.log("in the function");    
+function deleteItem(id){   
     $.ajax({
         url: '/items/' + id,
         type: 'DELETE',

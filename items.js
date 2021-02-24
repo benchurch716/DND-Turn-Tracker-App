@@ -33,8 +33,6 @@ module.exports = function () {
     });
     // Route to delete item from the table
     router.delete('/:id', function (req, res, next) {
-        console.log("in the route");
-        console.log(req.params.id);
         mysql.pool.query('DELETE FROM Items WHERE itemID=?', [req.params.id], function (err, rows, fields) {
             if (err) {
                 res.write(JSON.stringify(err));
