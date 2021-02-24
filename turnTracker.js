@@ -127,39 +127,8 @@ app.post('/characterdetailsdeleteitem', function (req, res, next) {
 });
 
 // Conditions
-app.get('/conditions', function (req, res, next) {
-  var context = {};
-  context.pageTitle = "Conditions";
-  mysql.pool.query('SELECT * FROM Conditions', function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    };
-    context.conditions = rows;
-    res.render('Conditions', context);
-  });
-});
-// Route to add conditions to the table from the form
-app.post('/conditions', function (req, res, next){
-  mysql.pool.query('INSERT INTO Conditions (name, effect) VALUES (?, ?)', [req.body.name, req.body.effect], function (err, rows, fields){
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/conditions');
-  });
-});
-// Route to delete condition from the table
-app.post('/conditionsdelete', function (req, res, next){
-  mysql.pool.query('DELETE FROM Conditions WHERE conID=?', [req.body.conID], function (err, rows, fields){
-    if (err) {
-      next(err);
-      return;
-    }
-    res.redirect('/conditions');
-  });
-});
 
+app.use('/conditions', require('./conditions.js'));
 // Encounters
 app.use('/encounters', require('./encounters.js'));
 //Items
