@@ -29,6 +29,7 @@ module.exports = function () {
     router.get('/', function (req, res, next) {
         var context = {};
         context.pageTitle = "Items";
+        //add scripts to the page header
         context.jsscripts = ["deleteItem.js"];
         getItems(res, mysql, context).then(result => res.render('Items', context));
     });
@@ -36,6 +37,8 @@ module.exports = function () {
     router.get('/:id', function (req, res, next) {
         var context = {};
         context.pageTitle = "Update Item"
+        //add scripts to the page header
+        context.jsscripts = ["updateItem.js"];
         //helper function to precheck checkboxes based on boolean value for the database
         context.helpers = {
             checked: function (value) {
@@ -45,7 +48,6 @@ module.exports = function () {
             }
         }
         getSelectedItem(req.params.id, res, mysql, context)
-            .then(result => console.log(context.selectedItem.isMagic))
             .then(result => res.render('Update_Item', context));
     });
 
@@ -62,6 +64,20 @@ module.exports = function () {
     // Route to delete item from the table
     router.delete('/:id', function (req, res, next) {
         mysql.pool.query('DELETE FROM Items WHERE itemID=?', [req.params.id], function (err, rows, fields) {
+            if (err) {
+                res.write(JSON.stringify(err));
+                res.status(400);
+                next(err);
+                return;
+            } else {
+                res.status(202).end();
+            }
+        });
+    });
+
+    //Route for updating item
+    router.put('/:id', function (req, res, next) {
+        mysql.pool.query("UPDATE Items SET name=?, type=?, quantity=?, effect=?, isMagic=? WHERE itemID=?", [req.body.name, req.body.type, req.body.quantity, req.body.effect, req.body.isMagic, req.params.id], function (err, rows, fields) {
             if (err) {
                 res.write(JSON.stringify(err));
                 res.status(400);
