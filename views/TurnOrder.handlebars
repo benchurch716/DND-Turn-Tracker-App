@@ -27,13 +27,7 @@
             <td>{{hostileToPlayer}}</td>
             <td>{{conName}}</td>
             <td>{{playerCharacter}}</td>
-             <td>
-                <form action='/turnorderdelete' method="post">
-                    <input type="hidden" name="charID" value="{{charID}}">
-                    <input type='hidden' name='enID' value="{{../enID}}">
-                    <input type="submit" name="Remove" value="Remove">
-                </form>
-            </td>
+            <td><button onclick="deleteTurn({{charID}}, {{enID}})">Delete</button></td>
             <td>
                 <form method="post">
                     <input type="hidden" name="charID" value="{{name}}">
@@ -51,7 +45,7 @@
         <label class="form-label">Character</label>
         <select class="form-select" aria-label="Default select example" name="charID">
             <option selected>Please Select</option>
-            {{#each characters}}
+            {{#each availableCharacters}}
             <option value="{{charID}}">{{name}}</option>
             {{/each}}
         </select>

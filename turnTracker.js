@@ -9,14 +9,12 @@ var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-//var request = require('request');
-
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', 3038);
 app.use('/static', express.static('public'));
 
-
+//Index Page
 app.get('/', function (req, res, next) {
   var context = {};
   context.pageTitle = "Index";
@@ -86,7 +84,7 @@ app.get('/characterdetails', function (req, res, next) {
 });
 // Route to add conditions to the selected character
 app.post('/characterdetailsaddconditions', function (req, res, next) {
-  console.log("body = "+JSON.stringify(req.body));
+  console.log("body = " + JSON.stringify(req.body));
   mysql.pool.query('INSERT INTO Conditions_Characters (conID, charID) VALUES (?, ?)', [req.body.conID, req.body.charID], function (err, rows, fields) {
     if (err) {
       res.write(JSON.stringify(err));
@@ -127,80 +125,14 @@ app.post('/characterdetailsdeleteitem', function (req, res, next) {
 });
 
 // Conditions
-
 app.use('/conditions', require('./conditions.js'));
 // Encounters
 app.use('/encounters', require('./encounters.js'));
 //Items
 app.use('/items', require('./items.js'));
-
 //Turn Order
-app.get('/turnorder', function (req, res, next) {
-  var context = {};
-  context.pageTitle = "Turn Order";
-  let enID = req.query.enID;
-  context.enID = enID;
-  mysql.pool.query('SELECT c.charID, c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, con.name conName ' +
-    'FROM Characters c ' +
-    'JOIN Encounters_Characters ec ' +
-    'ON c.charID = ec.charID ' +
-    'LEFT JOIN Conditions_Characters cc ' +
-    'ON cc.charID = c.charID ' +
-    'LEFT JOIN Conditions con ' +
-    'ON con.conID = cc.conID ' +
-    'WHERE enID = ?', [enID], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      context.encounter_characters = rows;
-      //select characters availble to add to the encounter
-      mysql.pool.query('SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
-        'WHERE ec.enID = ?)', [enID], function (err, rows, fields) {
-          if (err) {
-            next(err);
-            return;
-          }
-          context.characters = rows;
-          mysql.pool.query('SELECT enID FROM Encounters', function (err, rows, fields) {
-            if (err) {
-              next(err);
-              return;
-            }
-            context.encounters = rows;
-            res.render('TurnOrder', context);
-          });
-        });
-    });
-});
-// Turn Order add character route
-app.post('/turnorder', function (req, res, next) {
-  mysql.pool.query('SELECT initiativeBonus FROM Characters WHERE charID=?', [req.body.charID], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    let initiaitiveTotal = +rows[0].initiativeBonus + +req.body.initiativeRoll;
-    mysql.pool.query('INSERT INTO Encounters_Characters (enID, charID, initiativeTotal) VALUES (?, ?, ?)', [req.body.enID, req.body.charID, initiaitiveTotal], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
+app.use('/turnorder', require('./turnOrder.js'));
 
-    });
-  });
-  res.redirect('/turnorder?enID=' + [req.body.enID]);
-});
-// Turn order remove route
-app.post('/turnorderdelete', function (req, res, next) {
-  mysql.pool.query('DELETE FROM Encounters_Characters WHERE charID=? and enID=?', [req.body.charID, req.body.enID], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-  });
-  res.redirect('/turnorder?enID=' + [req.body.enID]);
-});
 
 //Reset (adapated from Source: https://medium.com/@johnkolo/how-to-run-multiple-sql-queries-directly-from-an-sql-file-in-node-js-part-1-dce1e6dd2def)
 app.get('/reset', function (req, res, next) {
