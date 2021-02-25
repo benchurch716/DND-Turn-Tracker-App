@@ -15,12 +15,7 @@
             <td>{{playerCharacter}}</td>
             <td>{{hostileToPlayer}}</td>
             <td><button onclick="deleteCharacter({{charID}})">Delete</button></td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{charID}}">
-                    <input type="submit" name="Edit" value="Edit">
-                </form>
-            </td>
+            <td><a href="/characters/{{charID}}">Update</a></td>
         </tr>
         {{/each}}
     </tbody>

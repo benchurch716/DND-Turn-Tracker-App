@@ -14,7 +14,17 @@ module.exports = function () {
             });
         });
     }
-
+    function getSelectedCharacter(charID, res, mysql, context) {
+        return new Promise(function (resolve, reject) {
+            mysql.pool.query('SELECT name, initiativeBonus, playerCharacter, hostileToPlayer, charID FROM Characters WHERE charID=?', [charID], function (error, rows) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(context.selectedCharacter = rows[0]);
+                }
+            });
+        });
+    }
 
     router.get('/', function (req, res, next) {
         var context = {};
@@ -34,9 +44,45 @@ module.exports = function () {
                 res.redirect('/characters');
             });
     });
+
+    router.get('/:id', function (req, res, next) {
+        var context = {};
+        context.pageTitle = "Update Character"
+        //add scripts to the page header
+        context.jsscripts = ["updateCharacter.js"];
+        //helper function to precheck checkboxes based on boolean value form the database
+        context.helpers = {
+            checkedTrue: function (value) {
+                if(value ==  true){
+                return 'checked';
+                }
+            },
+            checkedFalse: function (value) {
+                if(value ==  false){
+                return 'checked';
+                }
+            }
+        }
+        getSelectedCharacter(req.params.id, res, mysql, context)
+            .then(result => res.render('Update_Character', context));
+    });
+
     // Route to delete characters from the table
     router.delete('/:id', function (req, res, next) {
         mysql.pool.query('DELETE FROM Characters WHERE charID=?', [req.params.id], function (err, rows, fields) {
+            if (err) {
+                res.write(JSON.stringify(err));
+                res.status(400);
+                next(err);
+                return;
+            } else {
+                res.status(202).end();
+            }
+        });
+    });
+
+    router.put('/:id', function (req, res, next) {
+        mysql.pool.query("UPDATE Characters SET name=?, initiativeBonus=?, playerCharacter=?, hostileToPlayer=? WHERE charID=?", [req.body.name, req.body.initiativeBonus, req.body.playerCharacter, req.body.hostileToPlayer, req.params.id], function (err, rows, fields) {
             if (err) {
                 res.write(JSON.stringify(err));
                 res.status(400);
