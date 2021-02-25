@@ -47,20 +47,30 @@ module.exports = function () {
                 });
         });
     };
-    //not sure if this needs to be a promise? really just needs to return the number but is async
-    function getInitiativeBonus(charID, res, mysql, context) {
-        return new Promise((resolve, reject) =>
-            mysql.pool.query('SELECT enID FROM Encounters', [enID], function (err, rows, fields) {
+    function addEncounterCharacter(enID, charID, intTotal, mysql) {
+        return new Promise(function (resolve, reject) {
+            mysql.pool.query('INSERT INTO Encounters_Characters (enID, charID, initiativeTotal) VALUES (?, ?, ?)', [enID, charID, intTotal], function (err, rows, fields) {
                 if (err) {
-                    reject(error);
+                    reject (err);
                 } else {
-                    resolve(context.encounters = rows);
+                    resolve();
                 }
-            })
-        );
+            });
+        });
+    };
+    function getInitiativeTotal(charID, intRoll, mysql, intStats) {
+        return new Promise(function (resolve, reject) {
+            mysql.pool.query('SELECT initiativeBonus FROM Characters WHERE charID=?', [charID], function (err, rows, fields) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(intStats.total = Number(rows[0].initiativeBonus) + Number(intRoll));
+                }
+            });
+        });
     }
 
-
+    // Displays Turn Order
     router.get('/', function (req, res, next) {
         var context = {};
         context.pageTitle = "Turn Order";
@@ -68,30 +78,19 @@ module.exports = function () {
         let enID = req.query.enID;
         context.enID = enID;
         getTurnOrder(enID, res, mysql, context)
-            .then(resul => getEncounters(enID, res, mysql, context))
-            .then(resul => getAvailableCharacters(enID, res, mysql, context))
+            .then(result => getEncounters(enID, res, mysql, context))
+            .then(result => getAvailableCharacters(enID, res, mysql, context))
             .then(result => res.render('TurnOrder', context));
     });
 
     // Turn Order add character route
-    //  working on cleaning this up with functions to make it more readable and the asyn works without callback hell
     router.post('/', function (req, res, next) {
-        mysql.pool.query('SELECT initiativeBonus FROM Characters WHERE charID=?', [req.body.charID], function (err, rows, fields) {
-            if (err) {
-                next(err);
-                return;
-            }
-            let initiaitiveTotal = + rows[0].initiativeBonus + +req.body.initiativeRoll;
-            mysql.pool.query('INSERT INTO Encounters_Characters (enID, charID, initiativeTotal) VALUES (?, ?, ?)', [req.body.enID, req.body.charID, initiaitiveTotal], function (err, rows, fields) {
-                if (err) {
-                    next(err);
-                    return;
-                }
-
-            });
-        });
-        res.redirect('/turnorder?enID=' + [req.body.enID]);
+        var intStats = {}
+        getInitiativeTotal([req.body.charID], [req.body.initiativeRoll], mysql, intStats)
+            .then(result => addEncounterCharacter([req.body.enID], [req.body.charID], [intStats.total], mysql))
+            .then(result => res.redirect('/turnorder?enID=' + [req.body.enID]));
     });
+
     // Turn order remove route
     router.delete('/:charID&:enID', function (req, res, next) {
         mysql.pool.query('DELETE FROM Encounters_Characters WHERE charID=? and enID=?', [req.params.charID, req.params.enID], function (err, rows, fields) {
