@@ -10,12 +10,7 @@
         <tr>
             <td>{{name}}</td>
             <td>{{effect}}</td>
-             <td>
-                <form action='/conditionsdelete' method="post">
-                    <input type="hidden" name="conID" value="{{conID}}">
-                    <input type="submit" name="Delete" value="Delete">
-                </form>
-            </td>
+            <td><button onclick="deleteCondition({{conID}})">Delete</button></td>
             <td>
                 <form method="post">
                     <input type="hidden" name="conID" value="{{conID}}">

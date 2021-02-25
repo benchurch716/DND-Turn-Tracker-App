@@ -18,18 +18,8 @@
             <td>{{type}}</td>
             <td>{{quantity}}</td>
             <td>{{isMagic}}</td>
-             <td>
-                <form action='/itemsdelete' method="post">
-                    <input type="hidden" name="itemID" value="{{itemID}}">
-                    <input type="submit" name="Delete" value="Delete">
-                </form>
-            </td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="itemID" value="{{itemID}}">
-                    <input type="submit" name="Edit" value="Edit">
-                </form>
-            </td>
+            <td><button onclick="deleteItem({{itemID}})">Delete</button></td>
+            <td><a href="/items/{{itemID}}">Update</a></td>
         </tr>
         {{/each}}
     </tbody>

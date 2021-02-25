@@ -45,7 +45,7 @@ VALUES(1, 'Sting', 'Spear', 1, 'Long Reach', true),
         'Swords',
         2,
         '1d8 Slashing',
-        true
+        false
     ),
     (
         1,
