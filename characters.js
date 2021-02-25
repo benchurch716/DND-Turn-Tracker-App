@@ -82,7 +82,6 @@ module.exports = function () {
     });
 
     router.put('/:id', function (req, res, next) {
-        console.log("in the route");
         mysql.pool.query("UPDATE Characters SET name=?, initiativeBonus=?, playerCharacter=?, hostileToPlayer=? WHERE charID=?", [req.body.name, req.body.initiativeBonus, req.body.playerCharacter, req.body.hostileToPlayer, req.params.id], function (err, rows, fields) {
             if (err) {
                 res.write(JSON.stringify(err));

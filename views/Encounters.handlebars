@@ -13,12 +13,7 @@
             <td>{{round}}</td>
             <td>{{setting}}</td>
             <td><button onclick="deleteEncounter({{enID}})">Delete</button></td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{enID}}">
-                    <input type="submit" name="Edit" value="Edit">
-                </form>
-            </td>
+            <td><a href="/encounters/{{enID}}">Update</a></td>
         </tr>
         {{/each}}
     </tbody>
