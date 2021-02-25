@@ -23,114 +23,15 @@ app.get('/', function (req, res, next) {
 
 // Characters
 app.use('/characters', require('./characters.js'));
-
-//Character Details
-app.get('/characterdetails', function (req, res, next) {
-  var context = {};
-  context.pageTitle = "Character Details";
-  let charID = req.query.charID;
-  context.charID = charID;
-  mysql.pool.query('SELECT name FROM Characters WHERE charID=?', [charID], function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    context.selectedCharacter = rows;
-  });
-  mysql.pool.query('SELECT charID, name FROM Characters', function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
-    }
-    context.characters = rows;
-  });
-  mysql.pool.query('SELECT con.conID, con.name, con.effect ' +
-    'FROM Conditions con ' +
-    'INNER JOIN Conditions_Characters cc ' +
-    'ON con.conID = cc.conID ' +
-    'WHERE charID = ?', [charID], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      context.conditions_characters = rows;
-    });
-  mysql.pool.query('SELECT con.name, con.conID FROM Conditions con WHERE con.conID NOT IN (SELECT con.conID FROM Conditions con JOIN Conditions_Characters cc ON con.conID = cc.conID ' +
-    'WHERE cc.charID = ?)', [charID], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      context.conditions = rows;
-    });
-  mysql.pool.query('SELECT i.itemID, i.name, i.type, i.quantity, i.effect, i.isMagic ' +
-    'FROM Items i ' +
-    'WHERE i.heldBy = ?', [charID], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      context.character_items = rows;
-    });
-  mysql.pool.query('SELECT i.name, i.itemID FROM Items i WHERE i.itemID NOT IN (SELECT itemID FROM Items ' +
-    'WHERE heldBy = ?)', [charID], function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      context.items = rows;
-      res.render('CharacterDetails', context);
-    });
-});
-// Route to add conditions to the selected character
-app.post('/characterdetailsaddconditions', function (req, res, next) {
-  console.log("body = " + JSON.stringify(req.body));
-  mysql.pool.query('INSERT INTO Conditions_Characters (conID, charID) VALUES (?, ?)', [req.body.conID, req.body.charID], function (err, rows, fields) {
-    if (err) {
-      res.write(JSON.stringify(err));
-      res.end();
-    }
-    res.redirect('/characterdetails?charID=' + [req.body.charID]);
-  });
-});
-// Route to add items to the selected character
-app.post('/characterdetailsadditems', function (req, res, next) {
-  mysql.pool.query('UPDATE Items SET heldBy=? WHERE itemID=?', [req.body.charID, req.body.itemID], function (err, rows, fields) {
-    if (err) {
-      res.write(JSON.stringify(err));
-      res.end();
-    }
-    res.redirect('/characterdetails?charID=' + [req.body.charID]);
-  });
-});
-// Route to remove condition from character
-app.post('/characterdetailsdeletecondition', function (req, res, next) {
-  mysql.pool.query('DELETE FROM Conditions_Characters WHERE conID=? and charID=?', [req.body.conID, req.body.charID], function (err, rows, fields) {
-    if (err) {
-      res.write(JSON.stringify(err));
-      res.end();
-    }
-  });
-  res.redirect('/characterdetails?charID=' + [req.body.charID]);
-});
-// Route to remove item from character
-app.post('/characterdetailsdeleteitem', function (req, res, next) {
-  mysql.pool.query('UPDATE Items SET heldBy=NULL WHERE itemID=?', [req.body.itemID], function (err, rows, fields) {
-    if (err) {
-      res.write(JSON.stringify(err));
-      res.end();
-    }
-  });
-  res.redirect('/characterdetails?charID=' + [req.body.charID]);
-});
-
+// Character Details
+app.use('/characterdetails', require('./characterDetails.js'));
 // Conditions
 app.use('/conditions', require('./conditions.js'));
 // Encounters
 app.use('/encounters', require('./encounters.js'));
-//Items
+// Items
 app.use('/items', require('./items.js'));
-//Turn Order
+// Turn Order
 app.use('/turnorder', require('./turnOrder.js'));
 
 
