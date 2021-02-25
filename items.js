@@ -39,7 +39,7 @@ module.exports = function () {
         context.pageTitle = "Update Item"
         //add scripts to the page header
         context.jsscripts = ["updateItem.js"];
-        //helper function to precheck checkboxes based on boolean value for the database
+        //helper function to precheck checkboxes based on boolean value form the database
         context.helpers = {
             checked: function (value) {
                 if(value ==  true){
