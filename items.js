@@ -5,7 +5,7 @@ module.exports = function () {
 
     function getItems(res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT name, effect, type, quantity, isMagic, itemID FROM Items', function (err, rows) {
+            mysql.pool.query('SELECT name, effect, type, heldBy, quantity, isMagic, itemID FROM Items', function (err, rows) {
                 if (err) {
                     reject(error);
                 } else {
