@@ -5,10 +5,11 @@ module.exports = function () {
 
     function getCharacters(res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT * FROM Characters', function (err, rows) {
+            mysql.pool.query('SELECT name, initiativeBonus, CASE WHEN playerCharacter = 1 THEN "Player" ELSE "Non-Player" END AS playerCharacter, CASE WHEN hostileToPlayer = 1 THEN "Yes" ELSE "No" END as hostileToPlayer FROM Characters', function (err, rows) {
                 if (err) {
                     reject(error);
                 } else {
+                    console.log(rows);
                     resolve(context.characters = rows);
                 }
             });

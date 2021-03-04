@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS Characters;
 CREATE TABLE Characters(
     charID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
-    initiativeBonus INT,
+    initiativeBonus INT NOT NULL,
     playerCharacter TINYINT(1) NOT NULL,
-    hostileToPlayer TINYINT(1)
+    hostileToPlayer TINYINT(1) NOT NULL
 );
 INSERT INTO Characters(
         name,
