@@ -5,7 +5,8 @@ module.exports = function () {
 
     function getTurnOrder(enID, res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT c.charID, c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, ec.enID, con.name conName ' +
+            mysql.pool.query('SELECT c.charID, c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, ec.enID, ' +
+                'GROUP_CONCAT(DISTINCT con.name SEPARATOR ", ") conName ' +
                 'FROM Characters c ' +
                 'JOIN Encounters_Characters ec ' +
                 'ON c.charID = ec.charID ' +
@@ -13,10 +14,12 @@ module.exports = function () {
                 'ON cc.charID = c.charID ' +
                 'LEFT JOIN Conditions con ' +
                 'ON con.conID = cc.conID ' +
-                'WHERE enID = ?', [enID], function (err, rows, fields) {
+                'WHERE enID = ? ' +
+                'GROUP BY c.charID' , [enID], function (err, rows, fields) {
                     if (err) {
-                        reject(error);
+                        reject(err);
                     } else {
+                        console.log(rows);
                         resolve(context.encounter_characters = rows);
                     }
                 });
