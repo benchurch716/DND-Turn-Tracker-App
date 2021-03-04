@@ -11,12 +11,7 @@
             <td>{{name}}</td>
             <td>{{effect}}</td>
             <td><button onclick="deleteCondition({{conID}})">Delete</button></td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="conID" value="{{conID}}">
-                    <input type="submit" name="Edit" value="Edit">
-                </form>
-            </td>
+            <td><a href="/conditions/{{conID}}">Update</a></td>
         </tr>
         {{/each}}
     </tbody>

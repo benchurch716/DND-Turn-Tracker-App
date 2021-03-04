@@ -1,0 +1,12 @@
+<form id="update-condition" action="/conditions" method="post" class="row">
+    <div class="mb-3 col-4">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{selectedCondition.name}}">
+    </div>
+
+    <div class="mb-3 col-4">
+        <label class="form-label">Effect</label>
+        <input type="text" class="form-control" id="effect" name="effect" value="{{selectedCondition.effect}}">
+    </div>
+</form>
+<button onclick="updateCondition({{selectedCondition.conID}})">Update</button>

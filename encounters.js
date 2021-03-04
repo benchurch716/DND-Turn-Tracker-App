@@ -34,7 +34,7 @@ module.exports = function () {
     
     router.get('/:id', function (req, res, next) {
         var context = {};
-        context.pageTitle = "Update Encounter"
+        context.pageTitle = "Update Encounter";
         //add scripts to the page header
         context.jsscripts = ["updateEncounter.js"];
         //helper function to precheck checkboxes based on boolean value form the database
