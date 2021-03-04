@@ -45,7 +45,7 @@ module.exports = function () {
 
     // Route to add condition to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Conditions (name, effect) VALUES (?, ?)', [req.body.name, req.body.effect], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Conditions (name, effect) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.name, req.body.effect], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;
@@ -68,7 +68,7 @@ module.exports = function () {
     });
     // Route to update condition from the table
     router.put('/:id', function (req, res, next) {
-        mysql.pool.query("UPDATE Conditions SET name=?, effect=? WHERE conID=?", [req.body.name, req.body.effect, req.params.id], function (err, rows, fields){
+        mysql.pool.query("UPDATE Conditions SET name=(NULLIF(?, \'\'), effect=(NULLIF(?, \'\') WHERE conID=?", [req.body.name, req.body.effect, req.params.id], function (err, rows, fields){
             if (err) {
                 res.write(JSON.stringify(err));
                 res.status(400);
