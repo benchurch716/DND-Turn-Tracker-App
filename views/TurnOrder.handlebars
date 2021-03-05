@@ -38,8 +38,10 @@
 <form action="/turnorder" method="post"class="row">
     <div class="col-4">
         <label class="form-label">Character</label>
-        <select class="form-select" aria-label="Default select example" name="charID">
-            <option selected>Please Select</option>
+        <select class="form-select" aria-label="Default select example" name="charID" required>
+            <!-- Had to remove this so that a selected character would be 'required'
+                <option selected>Please Select</option>
+                -->
             {{#each availableCharacters}}
             <option value="{{charID}}">{{name}}</option>
             {{/each}}
@@ -47,7 +49,7 @@
     </div>
     <div class="mb-3 col-2">
         <label class="form-label">Initiative Roll</label>
-        <input type="number" class="form-control" id="initiativeRoll" name="initiativeRoll">
+        <input type="number" class="form-control" id="initiativeRoll" name="initiativeRoll" required>
     </div>
     <input type='hidden' name='enID' value="{{enID}}">
     <div class="col my-auto col-2">
