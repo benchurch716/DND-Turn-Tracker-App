@@ -1,5 +1,4 @@
 function updateCondition(id) {
-    console.log("in the updateFunction");
     $("form[name='update-condition']").validate({
         // Specify validation rules
         rules: {
