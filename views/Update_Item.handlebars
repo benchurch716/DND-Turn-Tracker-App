@@ -1,4 +1,4 @@
-<form id="update-item" action="/items" method="post" class="row">
+<form id="update-item" name='update-item' class="row">
     <div class="mb-3 col-4">
         <label class="form-label">Name (required)</label>
         <input type="text" class="form-control" id="name" name="name" value="{{selectedItem.name}}">
@@ -16,13 +16,13 @@
 
     <div class="mb-3 col-4">
         <label class="form-label">Quantity (required)</label>
-        <input type="text" class="form-control" id="quantity" name="quantity" value="{{selectedItem.quantity}}">
+        <input type="number" class="form-control" id="quantity" name="quantity" value="{{selectedItem.quantity}}">
     </div>
 
     <div class="mb-3 form-check col-4 my-auto">
-        <input type="checkbox" class="form-check-input mx-auto" id="exampleCheck1" name="isMagic" {{checked selectedItem.isMagic}} value=1>
+        <input type="checkbox" class="form-check-input mx-auto" id="exampleCheck1" name="isMagic" {{checked
+            selectedItem.isMagic}} value=1>
         <label class="form-check-label mx-auto" for="exampleCheck1">Magic Item? (Optional)</label>
     </div>
-    
+        <button type="submit" onclick="updateItem({{selectedItem.itemID}})">Update</button>
 </form>
-<button onclick="updateItem({{selectedItem.itemID}})">Update</button>
