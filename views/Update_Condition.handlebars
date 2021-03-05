@@ -1,7 +1,7 @@
-<form id="update-condition" action="/conditions" method="post" class="row">
+<form id="update-condition" name="update-condition" action="/conditions" class="row">
     <div class="mb-3 col-4">
         <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" name="name" value="{{selectedCondition.name}}" required>
+        <input type="text" class="form-control" id="name" name="name" value="{{selectedCondition.name}}">
     </div>
 
     <div class="mb-3 col-4">
@@ -10,7 +10,7 @@
     </div>
     <p></p>
     <div class="col">
-        <button onclick="updateCondition({{selectedCondition.conID}})" class="btn btn-primary btn-lg col-3">Update</button>
+        <button type='submit' onclick="updateCondition({{selectedCondition.conID}})" class="btn btn-primary btn-lg col-3">Update</button>
     </div>
 </form>
 
