@@ -1,12 +1,12 @@
-<form id="update-encounter" action="/encounters" method="post" class="row">
+<form id="update-encounter" name='update-encounters' action="/encounters" method="post" class="row">
     <div class="mb-3 col-4">
         <label class="form-label">Round</label>
-        <input type="text" class="form-control" id="round" name="round" value="{{selectedEncounter.round}}">
+        <input type="number" class="form-control" id="round" name="round" value="{{selectedEncounter.round}}">
     </div>
 
     <div class="mb-3 col-4">
         <label class="form-label">Setting</label>
         <input type="text" class="form-control" id="setting" name="setting" value="{{selectedEncounter.setting}}">
     </div>
+    <button type='submit' onclick="updateEncounter({{selectedEncounter.enID}})">Update</button>
 </form>
-<button onclick="updateEncounter({{selectedEncounter.enID}})">Update</button>
