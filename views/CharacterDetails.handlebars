@@ -27,12 +27,6 @@
             <td>{{name}}</a></td>
             <td>{{effect}}</td>
             <td><button onclick="deleteConChar({{conID}}, {{../charID}})">Remove</button></td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{name}}">
-                    <input type="submit" name="Edit" value="Edit">
-                </form>
-            </td>
         </tr>
         {{/each}}
     </tbody>
@@ -63,12 +57,6 @@
                     <input type="hidden" name="itemID" value="{{itemID}}">
                     <input type='hidden' name='charID' value="{{../charID}}">
                     <input type="submit" name="removeItem" value="Remove">
-                </form>
-            </td>
-            <td>
-                <form method="post">
-                    <input type="hidden" name="charID" value="{{itemID}}">
-                    <input type="submit" name="Edit" value="Edit">
                 </form>
             </td>
         </tr>

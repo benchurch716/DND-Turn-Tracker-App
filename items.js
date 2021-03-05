@@ -5,21 +5,20 @@ module.exports = function () {
 
     function getItems(res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT name, effect, type, heldBy, quantity, isMagic, itemID FROM Items', function (err, rows) {
+            mysql.pool.query('SELECT name, effect, type, heldBy, quantity, CASE WHEN isMagic = 1 THEN "Yes" ELSE "No" END AS isMagic, itemID FROM Items', function (err, rows) {
                 if (err) {
-                    reject(error);
+                    reject(err);
                 } else {
                     resolve(context.items = rows);
                 }
             });
         });
     }
-
     function getSelectedItem(itemID, res, mysql, context) {
         return new Promise(function (resolve, reject) {
             mysql.pool.query('SELECT name, effect, type, quantity, isMagic, itemID FROM Items WHERE itemID=?', [itemID], function (err, rows) {
                 if (err) {
-                    reject(error);
+                    reject(err);
                 } else {
                     resolve(context.selectedItem = rows[0]);
                 }
@@ -53,7 +52,7 @@ module.exports = function () {
 
     // Route to add items to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (?, ?, ?, ?, ?)', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;
