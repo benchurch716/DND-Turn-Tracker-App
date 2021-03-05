@@ -19,7 +19,7 @@ module.exports = function () {
 
     function getCharacterItems(charID, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT i.itemID, i.name, i.type, i.quantity, i.effect, i.isMagic FROM Items i ' +
+            mysql.pool.query('SELECT i.itemID, i.name, i.type, i.quantity, i.effect, CASE WHEN i.isMagic = 1 THEN "Yes" ELSE "No" END AS isMagic FROM Items i ' +
             'WHERE i.heldBy = ?', [charID], function (err, rows, fields) {
                 if (err) {
                     reject(err);
@@ -132,12 +132,7 @@ module.exports = function () {
             .then(result => getAvailableConditions(charID, mysql, context))
             .then(result => getAvailableItems(charID, mysql, context))
             .then(result => res.render('CharacterDetails', context));
-            /*
-            .catch(err => 
-                console.log("Oh no, an error! "+err),
-                res.status(500),
-                res.redirect('500')
-            );*/
+
     });
 
     // Add Condition or Item, Remove Item route

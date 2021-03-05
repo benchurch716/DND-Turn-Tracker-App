@@ -5,7 +5,7 @@ module.exports = function () {
 
     function getTurnOrder(enID, res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT c.charID, c.name, c.playerCharacter, c.hostileToPlayer, ec.initiativeTotal, ec.enID, ' +
+            mysql.pool.query('SELECT c.charID, c.name, CASE WHEN c.playerCharacter = 1 THEN "Player" ELSE "Non-Player" END AS playerCharacter, CASE WHEN c.hostileToPlayer = 1 THEN "Yes" ELSE "No" END AS hostileToPlayer, ec.initiativeTotal, ec.enID, ' +
                 'GROUP_CONCAT(DISTINCT con.name SEPARATOR ", ") conName ' +
                 'FROM Characters c ' +
                 'JOIN Encounters_Characters ec ' +
@@ -30,7 +30,7 @@ module.exports = function () {
         return new Promise(function (resolve, reject) {
             mysql.pool.query('SELECT enID FROM Encounters', [enID], function (err, rows, fields) {
                 if (err) {
-                    reject(error);
+                    reject(err);
                 } else {
                     resolve(context.encounters = rows);
                 }
@@ -43,7 +43,7 @@ module.exports = function () {
             mysql.pool.query('SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
                 'WHERE ec.enID = ?)', [enID], function (err, rows, fields) {
                     if (err) {
-                        reject(error);
+                        reject(err);
                     } else {
                         resolve(context.availableCharacters = rows);
                     }
