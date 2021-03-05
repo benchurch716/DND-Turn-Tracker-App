@@ -68,7 +68,7 @@ module.exports = function () {
     });
     // Route to update condition from the table
     router.put('/:id', function (req, res, next) {
-        mysql.pool.query("UPDATE Conditions SET name=(NULLIF(?, \'\'), effect=(NULLIF(?, \'\') WHERE conID=?", [req.body.name, req.body.effect, req.params.id], function (err, rows, fields){
+        mysql.pool.query("UPDATE Conditions SET name=?, effect=(NULLIF(?, \'\') WHERE conID=?", [req.body.name, req.body.effect, req.params.id], function (err, rows, fields){
             if (err) {
                 res.write(JSON.stringify(err));
                 res.status(400);

@@ -44,7 +44,7 @@ module.exports = function () {
 
     // Route to add encounters to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Encounters (round, setting) VALUES (?, ?)', [req.body.round, req.body.setting], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Encounters (round, setting) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.round, req.body.setting], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;

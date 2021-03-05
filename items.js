@@ -52,7 +52,7 @@ module.exports = function () {
 
     // Route to add items to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (?, ?, ?, ?, ?)', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;
