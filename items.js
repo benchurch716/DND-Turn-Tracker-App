@@ -14,7 +14,6 @@ module.exports = function () {
             });
         });
     }
-
     function getSelectedItem(itemID, res, mysql, context) {
         return new Promise(function (resolve, reject) {
             mysql.pool.query('SELECT name, effect, type, quantity, isMagic, itemID FROM Items WHERE itemID=?', [itemID], function (err, rows) {

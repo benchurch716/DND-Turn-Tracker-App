@@ -132,7 +132,6 @@ module.exports = function () {
             .then(result => getAvailableConditions(charID, mysql, context))
             .then(result => getAvailableItems(charID, mysql, context))
             .then(result => res.render('CharacterDetails', context));
-
     });
 
     // Add Condition or Item, Remove Item route

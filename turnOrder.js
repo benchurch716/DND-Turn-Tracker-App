@@ -25,7 +25,6 @@ module.exports = function () {
                 });
         });
     };
-
     function getEncounters(enID, res, mysql, context) {
         return new Promise(function (resolve, reject) {
             mysql.pool.query('SELECT enID FROM Encounters', [enID], function (err, rows, fields) {
@@ -37,7 +36,6 @@ module.exports = function () {
             });
         });
     };
-
     function getAvailableCharacters(enID, res, mysql, context) {
         return new Promise(function (resolve, reject) {
             mysql.pool.query('SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN (SELECT c.charID FROM Characters c JOIN Encounters_Characters ec ON c.charID = ec.charID ' +
