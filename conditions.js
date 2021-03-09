@@ -45,7 +45,7 @@ module.exports = function () {
 
     // Route to add condition to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Conditions (name, effect) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.name, req.body.effect], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Conditions (name, effect) VALUES (?, NULLIF(?, \'\'))', [req.body.name, req.body.effect], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;

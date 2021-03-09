@@ -96,7 +96,7 @@ module.exports = function () {
 
     function addItemCharacter(itemID, charID, mysql) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('UPDATE Items SET heldBy=? WHERE itemID=?', [charID, itemID], function (err, rows, fields){
+            mysql.pool.query('UPDATE Items SET heldBy=NULLIF(?, \'\') WHERE itemID=?', [charID, itemID], function (err, rows, fields){
                 if (err) {
                     reject(err);
                 } else {

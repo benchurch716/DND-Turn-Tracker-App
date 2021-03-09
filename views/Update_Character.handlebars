@@ -1,13 +1,13 @@
 <form id='update-character' name='update-character' class="row">
     <div class="mb-3 col-4">
-        <label class="form-label">Name</label>
-        <input type="text" class="form-control" id="name" name="name" value="{{selectedCharacter.name}}">
+        <label class="form-label">Name (required)</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{selectedCharacter.name}}" required>
     </div>
 
     <div class="mb-3 col-4">
-        <label class="form-label">Initiative Bonus</label>
+        <label class="form-label">Initiative Bonus (required)</label>
         <input type="number" class="form-control" id="initiativeBonus" name="initiativeBonus"
-            value="{{selectedCharacter.initiativeBonus}}">
+            value="{{selectedCharacter.initiativeBonus}}" required>
     </div>
 
     <div class='container'>
