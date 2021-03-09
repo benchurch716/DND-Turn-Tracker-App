@@ -8,5 +8,7 @@
         <label class="form-label">Setting</label>
         <input type="text" class="form-control" id="setting" name="setting" value="{{selectedEncounter.setting}}">
     </div>
-    <button type='submit' onclick="updateEncounter({{selectedEncounter.enID}})">Update</button>
+    <div>
+    <button type='submit' class="btn btn-primary btn-lg col-2" onclick="updateEncounter({{selectedEncounter.enID}})">Update</button>
+    </div>
 </form>
