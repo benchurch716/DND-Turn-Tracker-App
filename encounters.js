@@ -44,7 +44,7 @@ module.exports = function () {
 
     // Route to add encounters to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Encounters (round, setting) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.round, req.body.setting], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Encounters (round, setting) VALUES (?, NULLIF(?, \'\'))', [req.body.round, req.body.setting], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;
@@ -67,7 +67,7 @@ module.exports = function () {
     });
 
     router.put('/:id', function (req, res, next) {
-        mysql.pool.query("UPDATE Encounters SET round=?, setting=? WHERE enID=?", [req.body.round, req.body.setting, req.params.id], function (err, rows, fields) {
+        mysql.pool.query("UPDATE Encounters SET round=?, setting=NULLIF(?, \'\') WHERE enID=?", [req.body.round, req.body.setting, req.params.id], function (err, rows, fields) {
             if (err) {
                 res.write(JSON.stringify(err));
                 res.status(400);

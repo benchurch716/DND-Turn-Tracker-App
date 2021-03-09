@@ -10,7 +10,7 @@ CASE WHEN hostileToPlayer = 1 THEN "Yes" ELSE "No" END as hostileToPlayer FROM C
 SELECT charID, name, initiativeBonus, playerCharacter, hostileToPlayer, charID FROM Characters WHERE charID=?charID
 
 --Add a new character
-INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (NULLIF(?name, \'\'), NULLIF(?initiativeBonus, \'\'), NULLIF(?playerCharacter, \'\'), NULLIF(?hostileToPlayer, \'\'))
+INSERT INTO Characters (name, initiativeBonus, playerCharacter, hostileToPlayer) VALUES (?name, ?initiativeBonus, ?playerCharacter, ?hostileToPlayer)
 
 --Delete a character
 DELETE FROM Characters WHERE charID=?charID
@@ -27,31 +27,32 @@ SELECT * FROM Conditions
 SELECT conID, name, effect FROM Conditions WHERE conID=?conID
 
 --Add a new condition
-INSERT INTO Conditions (name, effect) VALUES (NULLIF(?name, \'\'), NULLIF(?effect, \'\'))
+INSERT INTO Conditions (name, effect) VALUES (?name, NULLIF(?effect, \'\'))
 
 --Delete a condition
 DELETE FROM Conditions WHERE conID=?conID
 
 --Update a condition
-UPDATE Conditions SET name=?name, effect=?effect WHERE conID=?conID
+UPDATE Conditions SET name=?name, effect=(NULLIF(?effect, \'\')) WHERE conID=?conID
 
 
 --ITEMS PAGE
 --Display all items
-SELECT name, effect, type, heldBy, quantity, 
-CASE WHEN isMagic = 1 THEN "Yes" ELSE "No" END AS isMagic, itemID FROM Items
+SELECT i.name AS itemName, effect, type, heldBy, quantity, 
+CASE WHEN isMagic = 1 THEN "Yes" ELSE "No" END AS isMagic, itemID, c.name AS charName 
+FROM Items i LEFT JOIN Characters c ON heldBy = charID
 
---Get all information from a selected Item
+--Get information from a selected Item
 SELECT name, effect, type, quantity, isMagic, itemID FROM Items WHERE itemID=?itemID
 
 --Add an new item
-INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (NULLIF(?name, \'\'), NULLIF(?effect, \'\'), NULLIF(?type, \'\'), NULLIF(?quantity, \'\'), NULLIF(?isMagic, \'\'))
+INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (?name, NULLIF(?effect, \'\'), NULLIF(?type, \'\'), ?quantity, NULLIF(?isMagic, \'\'))
 
 --Delete an item
 DELETE FROM Items WHERE itemID=?itemID
 
 --Update an item
-UPDATE Items SET name=?name, type=?type, quantity=?quantity, effect=?effect, isMagic=?isMagic WHERE itemID=?itemID
+UPDATE Items SET name=?name, type=NULLIF(?type, \'\'), quantity=?quantity, effect=NULLIF(?effect, \'\'), isMagic=NULLIF(?isMagic, \'\') WHERE itemID=?itemID
 
 
 --ENCOUNTERS PAGE
@@ -62,13 +63,13 @@ SELECT * FROM Encounters
 SELECT enID, round, setting FROM Encounters WHERE enID=?enID
 
 --Add an new encounter
-INSERT INTO Encounters (round, setting) VALUES (NULLIF(?round, \'\'), NULLIF(?setting, \'\'))
+INSERT INTO Encounters (round, setting) VALUES (?round, NULLIF(?setting, \'\'))
 
 --Delete an encounter
 DELETE FROM Encounters WHERE enID=?enID
 
 --Update an encounter
-UPDATE Encounters SET round=?round, setting=?setting WHERE enID=?enID
+UPDATE Encounters SET round=?round, setting=NULLIF(?setting, \'\') WHERE enID=?enID
 
 
 --CHARACTER DETAILS PAGE
@@ -99,7 +100,7 @@ SELECT i.name, i.itemID FROM Items i WHERE i.itemID NOT IN
 INSERT INTO Conditions_Characters (conID, charID) VALUES (?conID, ?charID)
 
 --Adds an item to a character
-UPDATE Items SET heldBy=?charID WHERE itemID=?itemID
+UPDATE Items SET heldBy=NULLIF(?charID, \'\') WHERE itemID=?itemID
 
 --Removes a condition from a character
 DELETE FROM Conditions_Characters WHERE conID=?conID and charID=?charID

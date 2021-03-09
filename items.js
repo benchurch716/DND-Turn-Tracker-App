@@ -52,7 +52,7 @@ module.exports = function () {
 
     // Route to add items to the table from the form
     router.post('/', function (req, res, next) {
-        mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'), NULLIF(?, \'\'))', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields) {
+        mysql.pool.query('INSERT INTO Items (name, effect, type, quantity, isMagic) VALUES (?, NULLIF(?, \'\'), NULLIF(?, \'\'), ?, NULLIF(?, \'\'))', [req.body.name, req.body.effect, req.body.type, req.body.quantity, req.body.isMagic], function (err, rows, fields) {
             if (err) {
                 next(err);
                 return;
@@ -76,7 +76,7 @@ module.exports = function () {
 
     //Route for updating item
     router.put('/:id', function (req, res, next) {
-        mysql.pool.query("UPDATE Items SET name=?, type=?, quantity=?, effect=?, isMagic=? WHERE itemID=?", [req.body.name, req.body.type, req.body.quantity, req.body.effect, req.body.isMagic, req.params.id], function (err, rows, fields) {
+        mysql.pool.query("UPDATE Items SET name=?, type=NULLIF(?, \'\'), quantity=?, effect=NULLIF(?, \'\'), isMagic=NULLIF(?, \'\') WHERE itemID=?", [req.body.name, req.body.type, req.body.quantity, req.body.effect, req.body.isMagic, req.params.id], function (err, rows, fields) {
             if (err) {
                 res.write(JSON.stringify(err));
                 res.status(400);
