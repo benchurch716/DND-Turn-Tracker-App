@@ -5,7 +5,7 @@ module.exports = function () {
 
     function getItems(res, mysql, context) {
         return new Promise(function (resolve, reject) {
-            mysql.pool.query('SELECT name, effect, type, heldBy, quantity, CASE WHEN isMagic = 1 THEN "Yes" ELSE "No" END AS isMagic, itemID FROM Items', function (err, rows) {
+            mysql.pool.query('SELECT i.name AS itemName, effect, type, heldBy, quantity, CASE WHEN isMagic = 1 THEN "Yes" ELSE "No" END AS isMagic, itemID, c.name AS charName FROM Items i LEFT JOIN Characters c ON heldBy = charID', function (err, rows) {
                 if (err) {
                     reject(err);
                 } else {
