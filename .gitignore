@@ -1,5 +1,7 @@
 **/node_modules
 **/dbcon.js
+**/credentials.js
+**/database.sh
 
 # Logs
 logs
