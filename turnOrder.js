@@ -15,7 +15,8 @@ module.exports = function () {
                 'LEFT JOIN Conditions con ' +
                 'ON con.conID = cc.conID ' +
                 'WHERE enID = ? ' +
-                'GROUP BY c.charID' , [enID], function (err, rows, fields) {
+                'GROUP BY c.charID ' +
+                'ORDER BY ec.initiativeTotal DESC', [enID], function (err, rows, fields) {
                     if (err) {
                         reject(err);
                     } else {
