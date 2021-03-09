@@ -70,7 +70,6 @@
     <div class="col-4">
         <label class="form-label">Condition</label>
         <select class="form-select" aria-label="Default select example" name="conID">
-            <option selected>Please Select</option>
             {{#each availableConditions}}
             <option value="{{conID}}">{{name}}</option>
             {{/each}}
@@ -88,7 +87,6 @@
     <div class="col-4">
         <label class="form-label">Item</label>
         <select class="form-select" aria-label="Default select example" name='itemID'>
-            <option selected>Please Select</option>
             {{#each availableItems}}
             <option value="{{itemID}}">{{name}}</option>
             {{/each}}

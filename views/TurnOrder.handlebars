@@ -39,9 +39,6 @@
     <div class="col-4">
         <label class="form-label">Character</label>
         <select class="form-select" aria-label="Default select example" name="charID" required>
-            <!-- Had to remove this so that a selected character would be 'required'
-                <option selected>Please Select</option>
-                -->
             {{#each availableCharacters}}
             <option value="{{charID}}">{{name}}</option>
             {{/each}}
