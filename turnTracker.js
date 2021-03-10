@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 3045);
+app.set('port', 3041);
 app.use('/static', express.static('public'));
 
 //Index Page
@@ -40,7 +40,7 @@ app.get('/reset', function (req, res, next) {
   var context = {};
   context.pageTitle = "Reset to Sample Data";
   console.log("Query Started");
-  let resetQuery = fs.readFileSync('DatabaseScripts.sql').toString();
+  let resetQuery = fs.readFileSync('dataDefinition.sql').toString();
   mysql.pool.query(resetQuery, function (err, rows) {
     if (err) {
       next(err);
