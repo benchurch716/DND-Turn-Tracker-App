@@ -69,7 +69,7 @@
 <form action='/characterdetails' method='post' class="row">
     <div class="col-4">
         <label class="form-label">Condition</label>
-        <select class="form-select" aria-label="Default select example" name="conID">
+        <select class="form-select" aria-label="Default select example" name="conID" required>
             {{#each availableConditions}}
             <option value="{{conID}}">{{name}}</option>
             {{/each}}
@@ -86,7 +86,7 @@
 <form action='/characterdetails' method='post' class="row">
     <div class="col-4">
         <label class="form-label">Item</label>
-        <select class="form-select" aria-label="Default select example" name='itemID'>
+        <select class="form-select" aria-label="Default select example" name='itemID' required>
             {{#each availableItems}}
             <option value="{{itemID}}">{{name}}</option>
             {{/each}}
