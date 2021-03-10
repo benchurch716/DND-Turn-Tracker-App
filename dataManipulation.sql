@@ -127,6 +127,7 @@ LEFT JOIN Conditions con
 ON con.conID = cc.conID 
 WHERE enID = ?enID 
 GROUP BY c.charID
+ORDER BY ec.initiativeTotal DESC
 
 --Display all characters that can be added to an encounter
 SELECT c.name, c.charID, c.initiativeBonus FROM Characters c WHERE c.charID NOT IN 
